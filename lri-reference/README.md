@@ -4,7 +4,9 @@ This is a minimal reference skeleton for the Living-Relational-Identity (LRI) pr
 
 ## Structure
 
-*   `api/`: Python modules for Subject CRUD, Relations, and Authority checks.
+*   `api/`: Python modules for Subject CRUD, Relations, Authority checks, and Simulation.
+*   `models/`: Data models for Identity State (for simulation).
+*   `services/`: Logic for the Identity Cycle Engine.
 *   `examples/`: JSON reference payloads for Subjects, LTP events, and DMP records.
 *   `main.py`: A FastAPI service demonstrating LRI integration.
 
@@ -36,7 +38,34 @@ python main.py
 
 The service will start on `http://0.0.0.0:8000`. You can access the auto-generated documentation at `http://0.0.0.0:8000/docs`.
 
-#### Live Demo Workflow
+#### Identity Cycle Simulation (PR #7)
+
+You can now simulate a full **LPI → DMP → LRI → LTP** identity cycle with a single endpoint.
+
+**POST** `/simulate/cycle`
+
+```bash
+curl -X POST "http://localhost:8000/simulate/cycle" \
+     -H "Content-Type: application/json" \
+     -d '{
+           "subject_id": "user-001",
+           "action": "launch_poc_api",
+           "intention": "validate architecture idea",
+           "context": {
+             "risk_level": "medium",
+             "time_horizon": "2_weeks"
+           }
+         }'
+```
+
+This will:
+1.  **Load** the identity (creating it if necessary).
+2.  **Record** a decision in DMP (mock).
+3.  **Evolve** the LRI identity state based on the decision.
+4.  **Transmit** the new context via LTP (mock).
+5.  Return the updated **Identity Snapshot**.
+
+#### Basic Live Demo Workflow
 
 1.  **Create Subject:**
     ```bash
