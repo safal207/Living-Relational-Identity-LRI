@@ -2,6 +2,7 @@ from models.identity_state import IdentityState
 from models.metrics import AgentMetrics
 from services.metrics_engine import metrics_engine
 from services.drift_monitor import drift_monitor
+from services.dmp_writer import dmp_writer
 import dmp
 import ltp
 
@@ -30,6 +31,14 @@ def run_identity_cycle(payload: dict):
     # --- Self-Observation (Core Metrics & Drift) ---
     # Record the event in the Metrics Engine
     metrics_engine.record(subject_id, action, intention)
+
+    # DMP-lite: Record the decision immutably (memory, not brain)
+    dmp_writer.record(
+        agent_id=subject_id,
+        intention=intention,
+        decision=action,
+        context="interaction"
+    )
 
     # Calculate Drift based on the accumulated history
     raw_metrics = metrics_engine.snapshot(subject_id)
