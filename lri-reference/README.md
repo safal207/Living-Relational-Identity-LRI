@@ -56,30 +56,26 @@ python adapters/ui_adapter.py
 ```
 Open `http://0.0.0.0:8001` in your browser.
 
-### 4. Multi-Agent Simulation (PR #9)
+### 4. Multi-Agent Simulation (PR #9 & PR #10)
 
-Run the interactive multi-agent shell to simulate interactions between multiple entities.
+#### CLI Shell
+Run the interactive multi-agent shell to simulate interactions between multiple entities via command line:
 
 ```bash
 python adapters/cli_multi_agent.py
 ```
 
-**Commands inside the shell:**
-*   `add <subject_id>`: Add a new agent to the environment.
-*   `interact <actor> <target> <action> <intention>`: Simulate an interaction where an actor affects a target.
-*   `status`: Show the state of all agents.
-*   `exit`: Quit the shell.
+#### Multi-Agent UI Adapter (PR #10)
+Run a web interface to visualize and manage multiple agents:
 
-**Example Session:**
+```bash
+python adapters/ui_multi_agent.py
 ```
-lri-multi-agent > add Alice
-✅ Агент Alice добавлен
-lri-multi-agent > add Bob
-✅ Агент Bob добавлен
-lri-multi-agent > interact Alice Bob greet make_friends
-✅ Взаимодействие завершено
-... (JSON output of trajectories) ...
-```
+Open `http://0.0.0.0:8002` in your browser.
+
+*   **Add Agent**: Create new identity subjects.
+*   **Interact**: Simulate Actor -> Target influence cycles.
+*   **Visualize**: See real-time trajectory updates.
 
 ---
 
