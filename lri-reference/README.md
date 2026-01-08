@@ -6,44 +6,65 @@ This is a minimal reference skeleton for the Living-Relational-Identity (LRI) pr
 
 *   `api/`: Python modules for Subject CRUD, Relations, and Authority checks.
 *   `examples/`: JSON reference payloads for Subjects, LTP events, and DMP records.
+*   `main.py`: A FastAPI service demonstrating LRI integration.
+
+## Installation
+
+1.  Navigate to the `lri-reference` directory.
+2.  Install requirements:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
 ## How to run
 
-1.  Ensure you have Python 3.10+ installed.
-2.  Navigate to the `lri-reference` directory.
-3.  Import modules from `api/` into your Python script or console.
+### 1. PoC Integration Script (CLI)
 
-### Example Usage
-
-Run this from inside the `lri-reference/` directory:
-
-```python
-from api.subject import create_subject, get_subject
-from api.relations import link_subject
-
-# Create a subject
-alice = create_subject("subj-001", {"name": "Alice", "role": "agent"})
-print(alice)
-
-# Link subjects
-link_subject("subj-001", "subj-002", "PEER")
-```
-
-### PoC Integration (LTP & DMP)
-
-To see a full demonstration of LRI integrating with LTP (Liminal Thread Protocol) events and DMP (Decision Memory Protocol) records, run the PoC script:
+To see a full demonstration of LRI integrating with LTP (Liminal Thread Protocol) events and DMP (Decision Memory Protocol) records via CLI:
 
 ```bash
 python examples/poc_integration.py
 ```
 
-This script demonstrates:
-1.  **Subject Creation**: Initializing an LRI identity.
-2.  **LTP Integration**: Linking a communication event to the identity.
-3.  **DMP Integration**: Linking a decision record to the identity.
-4.  **Verification**: Checking authority and continuity invariants.
-5.  **Traceability**: Listing all relational contexts for the subject.
+### 2. Live API Service (FastAPI)
 
-## Requirements
+To run the LRI Integration Service:
 
-No external dependencies are required for this skeleton.
+```bash
+python main.py
+```
+
+The service will start on `http://0.0.0.0:8000`. You can access the auto-generated documentation at `http://0.0.0.0:8000/docs`.
+
+#### Live Demo Workflow
+
+1.  **Create Subject:**
+    ```bash
+    curl -X POST "http://localhost:8000/subject/" \
+         -H "Content-Type: application/json" \
+         -d '{"id": "subj-001", "name": "Alice", "role": "agent"}'
+    ```
+
+2.  **Link LTP Event:**
+    ```bash
+    curl -X POST "http://localhost:8000/ltp_event/" \
+         -H "Content-Type: application/json" \
+         -d '{"event_id": "ltp-100", "subject_id": "subj-001", "action": "trade"}'
+    ```
+
+3.  **Link DMP Record:**
+    ```bash
+    curl -X POST "http://localhost:8000/dmp_record/" \
+         -H "Content-Type: application/json" \
+         -d '{"record_id": "dmp-500", "subject_id": "subj-001", "decision": "approved"}'
+    ```
+
+4.  **Check Relations:**
+    ```bash
+    curl "http://localhost:8000/subject/subj-001/relations"
+    ```
+
+5.  **Check Authority:**
+    ```bash
+    curl "http://localhost:8000/subject/subj-001/authority?action=trade"
+    ```
