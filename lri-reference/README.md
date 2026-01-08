@@ -29,6 +29,21 @@ print(alice)
 link_subject("subj-001", "subj-002", "PEER")
 ```
 
+### PoC Integration (LTP & DMP)
+
+To see a full demonstration of LRI integrating with LTP (Liminal Thread Protocol) events and DMP (Decision Memory Protocol) records, run the PoC script:
+
+```bash
+python examples/poc_integration.py
+```
+
+This script demonstrates:
+1.  **Subject Creation**: Initializing an LRI identity.
+2.  **LTP Integration**: Linking a communication event to the identity.
+3.  **DMP Integration**: Linking a decision record to the identity.
+4.  **Verification**: Checking authority and continuity invariants.
+5.  **Traceability**: Listing all relational contexts for the subject.
+
 ## Requirements
 
 No external dependencies are required for this skeleton.
