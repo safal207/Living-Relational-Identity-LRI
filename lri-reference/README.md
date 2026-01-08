@@ -7,7 +7,7 @@ This is a minimal reference skeleton for the Living-Relational-Identity (LRI) pr
 *   `api/`: Python modules for Subject CRUD, Relations, Authority checks, and Simulation.
 *   `adapters/`: CLI and UI adapters for interactive simulation.
 *   `models/`: Data models for Identity State (for simulation).
-*   `services/`: Logic for the Identity Cycle Engine.
+*   `services/`: Logic for the Identity Cycle Engine and Multi-Agent Environment.
 *   `examples/`: JSON reference payloads for Subjects, LTP events, and DMP records.
 *   `main.py`: A FastAPI service demonstrating LRI integration.
 
@@ -48,11 +48,6 @@ Interact with the system organically from the command line:
 python adapters/cli_adapter.py simulate --subject "user-cli-001" --action "login" --intention "access_cli"
 ```
 
-Or interactively:
-```bash
-python adapters/cli_adapter.py simulate
-```
-
 #### UI Adapter
 Run a minimal web interface for testing identity cycles:
 
@@ -60,6 +55,31 @@ Run a minimal web interface for testing identity cycles:
 python adapters/ui_adapter.py
 ```
 Open `http://0.0.0.0:8001` in your browser.
+
+### 4. Multi-Agent Simulation (PR #9)
+
+Run the interactive multi-agent shell to simulate interactions between multiple entities.
+
+```bash
+python adapters/cli_multi_agent.py
+```
+
+**Commands inside the shell:**
+*   `add <subject_id>`: Add a new agent to the environment.
+*   `interact <actor> <target> <action> <intention>`: Simulate an interaction where an actor affects a target.
+*   `status`: Show the state of all agents.
+*   `exit`: Quit the shell.
+
+**Example Session:**
+```
+lri-multi-agent > add Alice
+✅ Агент Alice добавлен
+lri-multi-agent > add Bob
+✅ Агент Bob добавлен
+lri-multi-agent > interact Alice Bob greet make_friends
+✅ Взаимодействие завершено
+... (JSON output of trajectories) ...
+```
 
 ---
 
