@@ -1,1 +1,3 @@
-# Minimal skeleton, no external dependencies yet
+fastapi
+uvicorn
+pydantic
