@@ -5,6 +5,7 @@ This is a minimal reference skeleton for the Living-Relational-Identity (LRI) pr
 ## Structure
 
 *   `api/`: Python modules for Subject CRUD, Relations, Authority checks, and Simulation.
+*   `adapters/`: CLI and UI adapters for interactive simulation.
 *   `models/`: Data models for Identity State (for simulation).
 *   `services/`: Logic for the Identity Cycle Engine.
 *   `examples/`: JSON reference payloads for Subjects, LTP events, and DMP records.
@@ -38,6 +39,30 @@ python main.py
 
 The service will start on `http://0.0.0.0:8000`. You can access the auto-generated documentation at `http://0.0.0.0:8000/docs`.
 
+### 3. LPI Adapters (PR #8)
+
+#### CLI Adapter
+Interact with the system organically from the command line:
+
+```bash
+python adapters/cli_adapter.py simulate --subject "user-cli-001" --action "login" --intention "access_cli"
+```
+
+Or interactively:
+```bash
+python adapters/cli_adapter.py simulate
+```
+
+#### UI Adapter
+Run a minimal web interface for testing identity cycles:
+
+```bash
+python adapters/ui_adapter.py
+```
+Open `http://0.0.0.0:8001` in your browser.
+
+---
+
 #### Identity Cycle Simulation (PR #7)
 
 You can now simulate a full **LPI → DMP → LRI → LTP** identity cycle with a single endpoint.
@@ -64,36 +89,3 @@ This will:
 3.  **Evolve** the LRI identity state based on the decision.
 4.  **Transmit** the new context via LTP (mock).
 5.  Return the updated **Identity Snapshot**.
-
-#### Basic Live Demo Workflow
-
-1.  **Create Subject:**
-    ```bash
-    curl -X POST "http://localhost:8000/subject/" \
-         -H "Content-Type: application/json" \
-         -d '{"id": "subj-001", "name": "Alice", "role": "agent"}'
-    ```
-
-2.  **Link LTP Event:**
-    ```bash
-    curl -X POST "http://localhost:8000/ltp_event/" \
-         -H "Content-Type: application/json" \
-         -d '{"event_id": "ltp-100", "subject_id": "subj-001", "action": "trade"}'
-    ```
-
-3.  **Link DMP Record:**
-    ```bash
-    curl -X POST "http://localhost:8000/dmp_record/" \
-         -H "Content-Type: application/json" \
-         -d '{"record_id": "dmp-500", "subject_id": "subj-001", "decision": "approved"}'
-    ```
-
-4.  **Check Relations:**
-    ```bash
-    curl "http://localhost:8000/subject/subj-001/relations"
-    ```
-
-5.  **Check Authority:**
-    ```bash
-    curl "http://localhost:8000/subject/subj-001/authority?action=trade"
-    ```
