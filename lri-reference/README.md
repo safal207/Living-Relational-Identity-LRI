@@ -65,17 +65,26 @@ Run the interactive multi-agent shell to simulate interactions between multiple 
 python adapters/cli_multi_agent.py
 ```
 
-#### Multi-Agent UI Adapter (PR #10)
-Run a web interface to visualize and manage multiple agents:
+#### Multi-Agent UI Adapter (PR #10 & PR #12)
+Run a web interface to visualize and manage multiple agents with **security controls**:
 
 ```bash
 python adapters/ui_multi_agent.py
 ```
 Open `http://0.0.0.0:8002` in your browser.
 
-*   **Add Agent**: Create new identity subjects.
-*   **Interact**: Simulate Actor -> Target influence cycles.
+*   **Login**: Use the built-in login form to generate a JWT token.
+    *   Default credentials: `agent_user` / `agentpass`
+*   **Add Agent**: Requires a valid token with `agent` role.
+*   **Interact**: Requires a valid token with `agent` role.
 *   **Visualize**: See real-time trajectory updates.
+
+### PR #12: Multi-Agent Security & Access Control
+
+- Added Role-Based Access Control (RBAC): admin / observer / agent.
+- JWT Authentication for UI interactions.
+- Added `/login` endpoint to the Multi-Agent UI adapter.
+- Secure interaction validation (one agent cannot interfere without authorization).
 
 ---
 
