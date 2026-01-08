@@ -1,5 +1,5 @@
-from fastapi import FastAPI, Form, HTTPException
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Form, HTTPException, Response
+from fastapi.responses import HTMLResponse, JSONResponse
 import sys
 import os
 import uvicorn
@@ -62,17 +62,21 @@ def login(username: str = Form(...), password: str = Form(...)):
     return {"token": token, "info": "Copy this token and paste it into the forms"}
 
 @app.post("/add", response_class=HTMLResponse)
-def add_agent(subject: str = Form(...), token: str = Form(...)):
+def add_agent(response: Response, subject: str = Form(...), token: str = Form(...)):
     try:
         user = get_current_user(token)
         require_role(user, "agent")
         env.add_agent(subject)
         return f"<h3>Агент {subject} добавлен ✅</h3><a href='/'>Назад</a>"
+    except HTTPException as e:
+        response.status_code = e.status_code
+        return f"<h3>Error: {e.detail}</h3><a href='/'>Назад</a>"
     except Exception as e:
+        response.status_code = 500
         return f"<h3>Error: {e}</h3><a href='/'>Назад</a>"
 
 @app.post("/interact", response_class=HTMLResponse)
-def interact(actor: str = Form(...), target: str = Form(...), action: str = Form(...), intention: str = Form(...), token: str = Form(...)):
+def interact(response: Response, actor: str = Form(...), target: str = Form(...), action: str = Form(...), intention: str = Form(...), token: str = Form(...)):
     try:
         user = get_current_user(token)
         require_role(user, "agent")
@@ -82,7 +86,11 @@ def interact(actor: str = Form(...), target: str = Form(...), action: str = Form
             traj_html += f"<li>{step['timestamp']}: {step['action']} ({step['intention']})</li>"
         traj_html += "</ul>"
         return f"<h3>Взаимодействие завершено ✅</h3><p>Траектория ({actor}):</p>{traj_html}<a href='/'>Назад</a>"
+    except HTTPException as e:
+        response.status_code = e.status_code
+        return f"<h3>Error: {e.detail}</h3><a href='/'>Назад</a>"
     except Exception as e:
+        response.status_code = 500
         return f"<h3>Error: {e}</h3><a href='/'>Назад</a>"
 
 if __name__ == "__main__":
