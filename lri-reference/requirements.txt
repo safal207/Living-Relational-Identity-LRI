@@ -4,3 +4,5 @@ pydantic
 click
 python-multipart
 pyjwt
+pytest
+httpx
