@@ -79,12 +79,14 @@ Open `http://0.0.0.0:8002` in your browser.
 *   **Interact**: Requires a valid token with `agent` role.
 *   **Visualize**: See real-time trajectory updates.
 
-### PR #12: Multi-Agent Security & Access Control
+### Core Features
 
-- Added Role-Based Access Control (RBAC): admin / observer / agent.
-- JWT Authentication for UI interactions.
-- Added `/login` endpoint to the Multi-Agent UI adapter.
-- Secure interaction validation (one agent cannot interfere without authorization).
+#### PR #14: Drift & Metrics Engine (Self-Observation)
+
+LRI now tracks its own behavior patterns:
+- **Metrics Engine**: Records all actions and intentions in a central registry.
+- **Drift Monitor**: Calculates the divergence of an agent's intentions (`drift score`).
+- **Core Integration**: Every identity cycle now automatically updates metrics and calculates drift, which is returned in the simulation snapshot.
 
 ---
 
@@ -107,10 +109,3 @@ curl -X POST "http://localhost:8000/simulate/cycle" \
            }
          }'
 ```
-
-This will:
-1.  **Load** the identity (creating it if necessary).
-2.  **Record** a decision in DMP (mock).
-3.  **Evolve** the LRI identity state based on the decision.
-4.  **Transmit** the new context via LTP (mock).
-5.  Return the updated **Identity Snapshot**.
