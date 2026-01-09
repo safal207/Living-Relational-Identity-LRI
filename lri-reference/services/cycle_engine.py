@@ -4,6 +4,8 @@ from services.metrics_engine import metrics_engine
 from services.drift_monitor import drift_monitor
 from services.dmp_writer import dmp_writer
 from services.authority_policy import authority_policy
+from models.economic_artifact import EconomicArtifact
+from services.artifact_registry import artifact_registry
 from fastapi import HTTPException
 import dmp
 import ltp
@@ -78,5 +80,14 @@ def run_identity_cycle(payload: dict):
     }
 
     ltp.transmit_thread(snapshot)
+
+    # === Economic Hooks: создаём артефакт для экспорта ===
+    artifact_payload = {
+        "identity_state": identity.snapshot(),
+        "drift_score": drift_score,
+        "decisions_count": len(identity.trajectory)
+    }
+    economic_artifact = EconomicArtifact(subject_id, artifact_type="cycle_snapshot", payload=artifact_payload)
+    artifact_registry.register_artifact(economic_artifact)
 
     return snapshot
