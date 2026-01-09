@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from api import subject, relations, authority, simulate_cycle
+from api import subject, relations, authority, simulate_cycle, observer_routes
 from pydantic import BaseModel
 import uvicorn
 import os
@@ -12,6 +12,8 @@ app = FastAPI(title="LRI Integration Service")
 
 # Include the simulation router
 app.include_router(simulate_cycle.router)
+# Include the observer router
+app.include_router(observer_routes.router)
 
 # -------------------------------
 # Models
