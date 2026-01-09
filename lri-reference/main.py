@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from api import subject, relations, authority, simulate_cycle, observer_routes
+from api import subject, relations, authority, simulate_cycle, observer_routes, economic
 from pydantic import BaseModel
 import uvicorn
 import os
@@ -14,6 +14,9 @@ app = FastAPI(title="LRI Integration Service")
 app.include_router(simulate_cycle.router)
 # Include the observer router
 app.include_router(observer_routes.router)
+
+# Include the economic artifacts router
+app.include_router(economic.router, prefix="/export", tags=["Economic Artifacts"])
 
 # -------------------------------
 # Models
