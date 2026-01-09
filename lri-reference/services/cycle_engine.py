@@ -3,6 +3,8 @@ from models.metrics import AgentMetrics
 from services.metrics_engine import metrics_engine
 from services.drift_monitor import drift_monitor
 from services.dmp_writer import dmp_writer
+from services.authority_policy import authority_policy
+from fastapi import HTTPException
 import dmp
 import ltp
 
@@ -14,7 +16,20 @@ def run_identity_cycle(payload: dict):
     # 1. Load identity
     identity = IdentityState.load(subject_id)
 
-    # 2. Record decision (DMP)
+    # --- Pre-computation for Authority Check ---
+    # We need current drift to check authority.
+    # In a real system, this might be cached or computed from identity state.
+    # Here we peek at metrics engine.
+    raw_metrics = metrics_engine.snapshot(subject_id)
+    current_drift = drift_monitor.calculate(raw_metrics.get("intentions", []))
+
+    # 2. Authority Check
+    if not authority_policy.is_authorized(identity, action, payload.get("context", {}), current_drift):
+        # In a real system, we might record a "Rejected" decision in DMP and return error
+        # For now, we raise 403
+        raise HTTPException(status_code=403, detail="Action unauthorized by LRI Authority Policy")
+
+    # 3. Record decision (DMP)
     decision = dmp.record_decision(
         subject_id=subject_id,
         action=action,
@@ -22,10 +37,10 @@ def run_identity_cycle(payload: dict):
         context=payload.get("context", {})
     )
 
-    # 3. Update identity (LRI)
+    # 4. Update identity (LRI)
     identity.evolve(decision)
 
-    # 4. Save state (Persist before transmit to ensure consistency)
+    # 5. Save state (Persist before transmit to ensure consistency)
     identity.save()
 
     # --- Self-Observation (Core Metrics & Drift) ---
@@ -40,7 +55,7 @@ def run_identity_cycle(payload: dict):
         context="interaction"
     )
 
-    # Calculate Drift based on the accumulated history
+    # Calculate Drift based on the accumulated history (post-action)
     raw_metrics = metrics_engine.snapshot(subject_id)
     drift_score = drift_monitor.calculate(raw_metrics.get("intentions", []))
 
