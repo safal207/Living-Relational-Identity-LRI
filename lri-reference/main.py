@@ -1,5 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from api import subject, relations, authority, simulate_cycle, observer_routes, economic
+from security.key_store import APIKeyStore
+from security.access_control import AccessScope
+from security.audit_log import AuditLog
 from pydantic import BaseModel
 import uvicorn
 import os
@@ -9,6 +12,8 @@ import sys
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
 app = FastAPI(title="LRI Integration Service")
+
+key_store = APIKeyStore()
 
 # Include the simulation router
 app.include_router(simulate_cycle.router)
@@ -70,7 +75,16 @@ def check_authority_api(subject_id: str, action: str):
     return authority.check_authority(subject_id, action)
 
 @app.get("/subject/{subject_id}/continuity")
-def check_continuity_api(subject_id: str):
+def check_continuity_api(subject_id: str, api_key: str):
+    key = key_store.get_key(api_key)
+    if not key or not key.allows(AccessScope.READ_CONTINUITY):
+        raise HTTPException(status_code=403, detail="Forbidden")
+
+    AuditLog.record(
+        event="read_continuity",
+        subject_id=subject_id,
+        api_key=api_key
+    )
     return authority.validate_continuity(subject_id)
 
 # -------------------------------
