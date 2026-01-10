@@ -1,0 +1,37 @@
+openapi: 3.1.0
+info:
+  title: LRI Updated Event
+  version: 1.0.0
+  description: Meaningful change (evolution).
+
+components:
+  schemas:
+    LRIUpdatedEvent:
+      type: object
+      required:
+        - event_id
+        - timestamp
+        - type
+        - payload
+      properties:
+        event_id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        type:
+          type: string
+          const: LRI_UPDATED
+        payload:
+          type: object
+          properties:
+            subject_id:
+              type: string
+            previous_hash:
+              type: string
+            new_hash:
+              type: string
+            diff:
+              $ref: '../diff/lri.diff.yaml#/components/schemas/LRIDiff'
+            authority_proof:
+              type: string

@@ -1,0 +1,58 @@
+openapi: 3.1.0
+info:
+  title: LRI Identity Schema
+  version: 1.0.0
+  description: Structure of the Living-Relational-Identity (LRI) Subject. "Who am I in context".
+
+components:
+  schemas:
+    LRIIdentity:
+      type: object
+      description: The core identity subject.
+      required:
+        - lri_id
+        - version
+        - state_hash
+        - created_at
+        - status
+        - keys
+      properties:
+        lri_id:
+          type: string
+          format: uri
+          description: Unique Decentralized Identifier (DID) for the identity.
+          example: "did:lri:b34c-89df-22a1"
+        version:
+          type: integer
+          description: Monotonically increasing version number of the identity state.
+          example: 12
+        state_hash:
+          type: string
+          description: Cryptographic hash of the current state, ensuring integrity and continuity.
+          example: "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp of identity genesis.
+        last_updated_at:
+          type: string
+          format: date-time
+          description: Timestamp of the last state change.
+        status:
+          type: string
+          enum: [ACTIVE, SUSPENDED, TERMINATED, ARCHIVED]
+          description: Operational status of the identity.
+        keys:
+          type: object
+          required:
+            - primary_sign_key
+          properties:
+            primary_sign_key:
+              type: string
+              description: Public key for verifying signatures from this identity.
+            recovery_key:
+              type: string
+              description: Public key used for recovering control if primary key is lost.
+        metadata:
+          type: object
+          description: Arbitrary metadata associated with the identity (non-normative).
