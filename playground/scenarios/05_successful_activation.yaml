@@ -1,0 +1,5 @@
+story: "Alice becomes active member"
+intent: add_relation
+expected:
+  phase_after: active
+  coherence_min: 0.6

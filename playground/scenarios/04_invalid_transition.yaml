@@ -1,0 +1,7 @@
+story: "Invalid lifecycle transition attempt"
+intent: add_relation
+requested_transition:
+  from: archived
+  to: active
+expected:
+  error: LRI_004_INVALID_LIFECYCLE_TRANSITION

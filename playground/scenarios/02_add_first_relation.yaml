@@ -1,0 +1,7 @@
+story: "Alice meets her first mentor"
+intent: mentor_relation
+relation:
+  type: mentor
+  target: dr-smith
+expected:
+  coherence_after: "increase"

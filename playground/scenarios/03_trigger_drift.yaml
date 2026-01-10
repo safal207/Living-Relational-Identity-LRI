@@ -1,0 +1,6 @@
+story: "Alice changes direction without intent"
+intent: drift_event
+change:
+  unauthorized_field: "research_focus"
+expected:
+  error: LRI_007_DRIFT_DETECTED
