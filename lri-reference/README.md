@@ -19,6 +19,27 @@ This is a minimal reference skeleton for the Living-Relational-Identity (LRI) pr
     pip install -r requirements.txt
     ```
 
+## Quick Start (Alice's Journey)
+
+To see LRI in action in under 1 minute:
+
+### 1. Simple Script
+See Alice create an identity, apply an action, and evolve.
+
+```bash
+python examples/hello_alice.py
+```
+
+### 2. Interactive Demo ("Alice in Action")
+Run a visual web interface to guide Alice from Student → Apprentice → Mentor.
+
+```bash
+python examples/alice_demo_server.py
+```
+Open `http://localhost:8005` in your browser.
+
+---
+
 ## How to run
 
 ### 1. PoC Integration Script (CLI)
