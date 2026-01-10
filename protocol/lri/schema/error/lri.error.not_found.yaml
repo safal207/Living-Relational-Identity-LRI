@@ -1,0 +1,8 @@
+error_code: "LRI_004"
+error_type: "NotFound"
+message: "Subject not found"
+severity: "error"
+retryable: false
+remediation: "Verify subject_id exists"
+context_required: ["subject_id"]
+http_status: 404

@@ -1,0 +1,15 @@
+# Story: Alice connects with her advisor Dr. Smith
+subject_id: "alice-2026-01-10"
+phase: "emerging"
+coherence_score: 0.35  # Growing
+relations:
+  - to_subject: "dr-smith-001"
+    type: "mentor"
+    strength: 0.4
+    established_at: "2026-01-11T14:00:00Z"
+events:
+  - event_id: "evt-002"
+    type: "lri.updated"
+    timestamp: "2026-01-11T14:00:00Z"
+    changes:
+      added_relation: "dr-smith-001"

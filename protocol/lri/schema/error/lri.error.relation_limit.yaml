@@ -1,0 +1,8 @@
+error_code: "LRI_003"
+error_type: "RelationshipLimitExceeded"
+message: "Maximum number of relationships of this type reached"
+severity: "warning"
+retryable: false
+remediation: "Remove existing relationships before adding new ones"
+context_required: ["relationship_type", "max_allowed"]
+http_status: 409

@@ -1,0 +1,8 @@
+error_code: "LRI_007"
+error_type: "ValidationFailed"
+message: "Schema validation failed"
+severity: "error"
+retryable: false
+remediation: "Check data against schema"
+context_required: ["validation_errors"]
+http_status: 422

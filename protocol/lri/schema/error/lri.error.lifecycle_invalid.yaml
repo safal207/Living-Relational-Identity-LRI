@@ -1,0 +1,8 @@
+error_code: "LRI_008"
+error_type: "InvalidLifecycleTransition"
+message: "Cannot transition between specified lifecycle phases"
+severity: "error"
+retryable: false
+remediation: "Check allowed transitions in lifecycle.rules.yaml"
+context_required: ["current_phase", "target_phase"]
+http_status: 422

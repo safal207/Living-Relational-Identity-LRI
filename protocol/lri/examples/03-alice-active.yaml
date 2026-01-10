@@ -1,0 +1,18 @@
+# Story: After 30 days, Alice becomes an active member
+subject_id: "alice-2026-01-10"
+phase: "active"  # Transitioned!
+coherence_score: 0.65
+relations:
+  - to_subject: "dr-smith-001"
+    type: "mentor"
+    strength: 0.7  # Stronger now
+  - to_subject: "bob-student-002"
+    type: "peer"
+    strength: 0.5
+events:
+  - event_id: "evt-015"
+    type: "lifecycle.transitioned"
+    timestamp: "2026-02-10T10:00:00Z"
+    from_phase: "emerging"
+    to_phase: "active"
+    reason: "met_all_conditions"
