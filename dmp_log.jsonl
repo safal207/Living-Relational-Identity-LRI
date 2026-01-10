@@ -1,0 +1,4 @@
+{"agent_id": "alice-001", "intention": "learn_basics", "decision": "complete_module_1", "context": "interaction", "timestamp": "2026-01-10 18:19:30.344496+00:00"}
+{"agent_id": "alice-demo-001", "intention": "increase_competence", "decision": "study_session", "context": "interaction", "timestamp": "2026-01-10 18:20:24.003493+00:00"}
+{"agent_id": "alice-demo-001", "intention": "career_growth", "decision": "promote_to_apprentice", "context": "interaction", "timestamp": "2026-01-10 18:20:25.096731+00:00"}
+{"agent_id": "alice-demo-001", "intention": "unknown_chaos", "decision": "break_production", "context": "interaction", "timestamp": "2026-01-10 18:20:26.363428+00:00"}
