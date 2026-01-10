@@ -1,0 +1,10 @@
+error_code: "LRI_006"
+error_type: "RateLimitExceeded"
+message: "Rate limit exceeded"
+severity: "warning"
+retryable: true
+remediation: "Retry after specified duration"
+context_required: ["retry_after"]
+http_status: 429
+additional_headers:
+  Retry-After: "60"

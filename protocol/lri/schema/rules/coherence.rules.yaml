@@ -1,0 +1,5 @@
+thresholds:
+  min_for_read: 0.0
+  min_for_write: 0.3
+  min_for_reflect: 0.4
+  min_for_archive: 0.6

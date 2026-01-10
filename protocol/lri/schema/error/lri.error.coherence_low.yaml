@@ -1,0 +1,8 @@
+error_code: "LRI_002"
+error_type: "CoherenceTooLow"
+message: "Identity coherence score is too low for this operation"
+severity: "warning"
+retryable: false
+remediation: "Increase coherence score through additional verification"
+context_required: ["current_score", "required_score"]
+http_status: 422

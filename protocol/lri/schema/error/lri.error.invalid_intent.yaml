@@ -1,0 +1,8 @@
+error_code: "LRI_001"
+error_type: "InvalidIntent"
+message: "The provided intent format is invalid"
+severity: "error"
+retryable: false
+remediation: "Verify intent format against schema"
+context_required: ["intent_id", "invalid_fields"]
+http_status: 400

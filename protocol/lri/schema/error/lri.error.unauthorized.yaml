@@ -1,0 +1,8 @@
+error_code: "LRI_005"
+error_type: "Unauthorized"
+message: "API key invalid or missing required scopes"
+severity: "error"
+retryable: false
+remediation: "Check API key and required scopes"
+context_required: ["api_key", "required_scopes"]
+http_status: 401

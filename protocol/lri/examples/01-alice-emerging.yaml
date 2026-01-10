@@ -1,0 +1,20 @@
+# Story: Alice just joined the platform as a student
+subject_id: "alice-2026-01-10"
+context:
+  type: "educational"
+  institution: "MIT"
+  role: "undergraduate"
+phase: "emerging"
+coherence_score: 0.2  # Still forming
+attributes:
+  name: "Alice"
+  interests: ["machine learning", "robotics"]
+  timezone: "America/New_York"
+relations: []  # No relations yet
+events:
+  - event_id: "evt-001"
+    type: "lri.created"
+    timestamp: "2026-01-10T09:00:00Z"
+    actor: "alice-2026-01-10"
+created_at: "2026-01-10T09:00:00Z"
+updated_at: "2026-01-10T09:00:00Z"

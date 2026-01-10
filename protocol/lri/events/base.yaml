@@ -1,0 +1,5 @@
+event_id: uuid
+correlation_id: uuid
+causation_id: uuid
+idempotency_key: string
+ttl: int

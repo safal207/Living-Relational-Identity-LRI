@@ -1,0 +1,5 @@
+"active -> archived":
+  reversible: false
+
+"any -> dormant":
+  coherence_below: 0.2

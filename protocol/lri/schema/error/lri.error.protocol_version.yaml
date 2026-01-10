@@ -1,0 +1,8 @@
+error_code: "LRI_010"
+error_type: "ProtocolVersionMismatch"
+message: "Requested protocol version not supported"
+severity: "error"
+retryable: false
+remediation: "Use supported protocol version"
+context_required: ["requested_version", "supported_versions"]
+http_status: 400

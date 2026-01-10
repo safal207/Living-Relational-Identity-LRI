@@ -1,0 +1,8 @@
+error_code: "LRI_500"
+error_type: "InternalServerError"
+message: "An unexpected error occurred"
+severity: "critical"
+retryable: true
+remediation: "Contact support if issue persists"
+context_required: ["error_id"]
+http_status: 500

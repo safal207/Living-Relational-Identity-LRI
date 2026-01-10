@@ -1,0 +1,8 @@
+error_code: "LRI_009"
+error_type: "DiffConflict"
+message: "Conflicting changes detected"
+severity: "error"
+retryable: true
+remediation: "Resolve conflicts and retry"
+context_required: ["conflicts"]
+http_status: 409
