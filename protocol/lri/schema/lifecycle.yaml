@@ -1,0 +1,31 @@
+openapi: 3.1.0
+info:
+  title: LRI Lifecycle Schema
+  version: 1.0.0
+  description: Lifecycle definition: Birth -> Evolution -> Archive.
+
+components:
+  schemas:
+    LifecycleState:
+      type: string
+      enum:
+        - GENESIS     # The moment of creation/instantiation
+        - ACTIVE      # Fully operational and evolving
+        - DORMANT     # Inactive but valid
+        - REFLECTING  # Undergoing self-audit or major version upgrade
+        - TERMINATED  # Ceased operation
+        - ARCHIVED    # Read-only historical record
+
+    Transition:
+      type: object
+      properties:
+        from:
+          $ref: '#/components/schemas/LifecycleState'
+        to:
+          $ref: '#/components/schemas/LifecycleState'
+        trigger:
+          type: string
+          description: The event or condition triggering the transition.
+        required_authority:
+          type: string
+          description: The level of authority required to execute this transition.

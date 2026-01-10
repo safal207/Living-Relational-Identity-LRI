@@ -1,0 +1,39 @@
+openapi: 3.1.0
+info:
+  title: LRI Diff Schema
+  version: 1.0.0
+  description: Minimal semantic diff.
+
+components:
+  schemas:
+    LRIDiff:
+      type: object
+      description: Represents a semantic change in the identity state.
+      properties:
+        changes:
+          type: array
+          items:
+            type: object
+            required:
+              - op
+              - path
+            properties:
+              op:
+                type: string
+                enum: [add, remove, replace, copy, move, test]
+                description: JSON Patch operation type.
+              path:
+                type: string
+                description: JSON Pointer to the modified field.
+              value:
+                type: object
+                description: The new value (for add/replace).
+              from:
+                type: string
+                description: Source path (for move/copy).
+        intent:
+          type: string
+          description: Human-readable or structured description of the *why* behind this change.
+        reasoning:
+          type: string
+          description: Link to the decision process (DMP) that authorized this diff.

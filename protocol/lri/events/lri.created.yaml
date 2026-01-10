@@ -1,0 +1,33 @@
+openapi: 3.1.0
+info:
+  title: LRI Created Event
+  version: 1.0.0
+  description: Primary appearance of identity.
+
+components:
+  schemas:
+    LRICreatedEvent:
+      type: object
+      required:
+        - event_id
+        - timestamp
+        - type
+        - payload
+      properties:
+        event_id:
+          type: string
+          description: Unique ID of the creation event.
+        timestamp:
+          type: string
+          format: date-time
+        type:
+          type: string
+          const: LRI_CREATED
+        payload:
+          type: object
+          properties:
+            initial_state:
+              $ref: '../schema/identity.yaml#/components/schemas/LRIIdentity'
+            genesis_proof:
+              type: string
+              description: Cryptographic proof of origin.

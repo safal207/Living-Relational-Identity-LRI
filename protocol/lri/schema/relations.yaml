@@ -1,0 +1,33 @@
+openapi: 3.1.0
+info:
+  title: LRI Relations Schema
+  version: 1.0.0
+  description: Structure for LRI Relationships. "Connections, Resonances, Roles".
+
+components:
+  schemas:
+    Relationship:
+      type: object
+      required:
+        - target_id
+        - type
+        - established_at
+      properties:
+        target_id:
+          type: string
+          format: uri
+          description: The LRI ID of the related entity.
+          example: "did:lri:system-root-01"
+        type:
+          type: string
+          description: The nature of the relationship.
+          enum: [OWNER, PEER, CHILD, AUDITOR, OBSERVER, CONTEXT]
+        established_at:
+          type: string
+          format: date-time
+          description: When the relationship was formed.
+        metadata:
+          type: object
+          description: Context-specific attributes of the relationship (e.g., permissions).
+          example:
+            permissions: ["audit", "shutdown"]
