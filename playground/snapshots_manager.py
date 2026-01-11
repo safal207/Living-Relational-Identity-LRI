@@ -58,10 +58,7 @@ def create_snapshot(snapshot_id: str, trajectory_data: dict) -> dict:
 
     filepath = SNAPSHOTS_DIR / f"{safe_id}.json"
 
-    # Enforce immutability: prevent overwriting existing snapshots
-    if filepath.exists():
-        raise SnapshotExistsError(f"Snapshot '{safe_id}' already exists. Choose a different name.")
-
+    SNAPSHOTS_DIR.mkdir(parents=True, exist_ok=True)
     events = trajectory_data.get("events", [])
 
     snapshot = {
@@ -71,9 +68,12 @@ def create_snapshot(snapshot_id: str, trajectory_data: dict) -> dict:
         "checksum": compute_checksum(events)
     }
 
-    SNAPSHOTS_DIR.mkdir(parents=True, exist_ok=True)
-    with open(filepath, 'w') as f:
-        json.dump(snapshot, f, indent=2, default=str)
+    # Atomic write: exclusive creation, prevents race condition
+    try:
+        with open(filepath, 'x') as f:
+            json.dump(snapshot, f, indent=2, default=str)
+    except FileExistsError:
+        raise SnapshotExistsError(f"Snapshot '{safe_id}' already exists. Choose a different name.")
 
     return snapshot
 
