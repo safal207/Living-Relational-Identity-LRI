@@ -2,9 +2,11 @@ import json
 import hashlib
 from datetime import datetime, timezone
 from pathlib import Path
+import threading
 import os
 
 SNAPSHOTS_DIR = Path(__file__).parent / "snapshots"
+_snapshot_lock = threading.Lock()  # Global lock for snapshot creation queue
 
 class SnapshotError(Exception):
     """Base exception for snapshot errors."""
@@ -38,7 +40,7 @@ def compute_checksum(events: list) -> str:
     return hashlib.sha256(events_json.encode()).hexdigest()[:16]
 
 def create_snapshot(snapshot_id: str, trajectory_data: dict) -> dict:
-    """Freeze current trajectory.
+    """Freeze current trajectory safely with atomic write and queue.
 
     Args:
         snapshot_id: Unique identifier for the snapshot.
@@ -57,8 +59,8 @@ def create_snapshot(snapshot_id: str, trajectory_data: dict) -> dict:
         raise ValueError("Invalid snapshot ID: must contain alphanumeric characters")
 
     filepath = SNAPSHOTS_DIR / f"{safe_id}.json"
-
     SNAPSHOTS_DIR.mkdir(parents=True, exist_ok=True)
+
     events = trajectory_data.get("events", [])
 
     snapshot = {
@@ -68,12 +70,13 @@ def create_snapshot(snapshot_id: str, trajectory_data: dict) -> dict:
         "checksum": compute_checksum(events)
     }
 
-    # Atomic write: exclusive creation, prevents race condition
-    try:
-        with open(filepath, 'x') as f:
-            json.dump(snapshot, f, indent=2, default=str)
-    except FileExistsError:
-        raise SnapshotExistsError(f"Snapshot '{safe_id}' already exists. Choose a different name.")
+    # Queue snapshot creation
+    with _snapshot_lock:
+        try:
+            with open(filepath, 'x') as f:  # 'x' — atomic write
+                json.dump(snapshot, f, indent=2, default=str)
+        except FileExistsError:
+            raise SnapshotExistsError(f"Snapshot '{safe_id}' already exists. Choose a different name.")
 
     return snapshot
 
