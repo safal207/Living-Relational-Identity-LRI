@@ -5,6 +5,14 @@ import glob
 import time
 import argparse
 
+try:
+    import snapshots_manager
+except ImportError:
+    # Handle direct execution
+    import sys
+    sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+    import snapshots_manager
+
 # Mock Coherence Logic
 COHERENCE_RULES = {
     "add_relation": 0.30,      # Increased to ensure activation (0.18+0.25-0.10+0.30 = 0.63 > 0.6)
@@ -95,13 +103,102 @@ def initialize_identity():
         "relations": [], # List of types: 'mentor', 'peer'
     }
 
-def process_command(cmd_str, identity, renderer):
+def process_command(cmd_str, identity, renderer, session_state=None):
+    if session_state is None:
+        session_state = {"frozen": False}
+
     parts = cmd_str.split()
     if not parts:
         return
 
     cmd = parts[0].lower()
     args = parts[1:]
+
+    # Handle Snapshot Commands
+    if cmd == "snapshot":
+        if len(args) < 1:
+            print("✗ Usage: snapshot <id>")
+            return
+        snapshot_id = args[0]
+        try:
+            trajectory_data = {
+                "subject_id": identity["id"],
+                "events": renderer.history,
+                "current_state": identity
+            }
+            snap = snapshots_manager.create_snapshot(snapshot_id, trajectory_data)
+            print(f"✓ Snapshot '{snap['id']}' created at coherence {identity['coherence']:.2f}")
+            print(f"\nFrozen trajectory:")
+            print(f"  Events: {len(renderer.history)}")
+            print(f"  Phase: {identity['phase']}")
+            print(f"  Checksum: {snap['checksum']}...")
+        except Exception as e:
+            print(f"✗ Error creating snapshot: {e}")
+        return
+
+    elif cmd == "snapshots":
+        snaps = snapshots_manager.list_snapshots()
+        if not snaps:
+            print("No snapshots found.")
+            return
+        print("\nAvailable snapshots:")
+        print(f"{'ID':<15} | {'Created':<20} | {'Phase':<10} | {'Events':<8} | {'Valid'}")
+        print("-" * 70)
+        for s in snaps:
+            created = s['created_at'].replace('T', ' ')[:16]
+            valid_mark = "✓" if s['valid'] else "✗"
+            print(f"{s['id']:<15} | {created:<20} | {s['phase']:<10} | {s['events_count']:<8} | {valid_mark}")
+        print("")
+        return
+
+    elif cmd == "switch":
+        if len(args) < 1:
+            print("✗ Usage: switch <id>")
+            return
+        snapshot_id = args[0]
+
+        confirm = input(f"⚠ This will replace current trajectory with '{snapshot_id}'. Continue? (y/n): ")
+        if confirm.lower() != 'y':
+            print("Cancelled.")
+            return
+
+        try:
+            snapshot = snapshots_manager.load_snapshot(snapshot_id)
+
+            # Restore state
+            trajectory = snapshot["trajectory"]
+
+            # Clear and update identity
+            identity.clear()
+            identity.update(trajectory["current_state"])
+
+            # Clear and update history
+            renderer.history = trajectory["events"]
+
+            # Enable READ-ONLY mode
+            session_state["frozen"] = True
+
+            print(f"\n✓ Switched to snapshot '{snapshot_id}'")
+            renderer.render(identity['id'])
+            print("\n⚠ Trajectory is READ-ONLY. Type 'continue' to resume.")
+
+        except Exception as e:
+            print(f"✗ Error switching snapshot: {e}")
+        return
+
+    elif cmd == "continue":
+        if not session_state["frozen"]:
+            print("⚠ Trajectory is already active")
+            return
+        session_state["frozen"] = False
+        print("✓ Trajectory active. You may now add actions.")
+        return
+
+    # Enforce Read-Only Mode for mutation commands
+    if session_state.get("frozen", False):
+        if cmd in ["add_mentor", "add_peer", "transition", "reset"]:
+            print("✗ Error: Trajectory is frozen. Type 'continue' to resume.")
+            return
 
     start_coherence = identity["coherence"]
 
@@ -110,6 +207,10 @@ def process_command(cmd_str, identity, renderer):
         print("  add_mentor <subject> <mentor>  Add mentor relationship")
         print("  add_peer <subject> <peer>      Add peer relationship")
         print("  transition <phase>             Attempt lifecycle transition")
+        print("  snapshot <id>                  Freeze current trajectory")
+        print("  snapshots                      List available snapshots")
+        print("  switch <id>                    Load a snapshot (READ-ONLY)")
+        print("  continue                       Resume from READ-ONLY mode")
         print("  show_trajectory                Display full evolution")
         print("  show_state                     Show current identity state")
         print("  reset                          Reset to initial state")
@@ -204,6 +305,7 @@ def interactive_mode():
 
     renderer = TrajectoryRenderer()
     identity = initialize_identity()
+    session_state = {"frozen": False}
 
     # Initial state step
     renderer.add_step(
@@ -213,7 +315,8 @@ def interactive_mode():
 
     while True:
         try:
-            cmd_str = input("> ").strip()
+            prompt_char = "🔒 > " if session_state["frozen"] else "> "
+            cmd_str = input(prompt_char).strip()
 
             if not cmd_str:
                 continue
@@ -222,12 +325,13 @@ def interactive_mode():
                 print("Goodbye!")
                 break
 
-            result = process_command(cmd_str, identity, renderer)
+            result = process_command(cmd_str, identity, renderer, session_state)
 
             if result == "RESET":
                 print("✓ Identity reset to initial state")
                 renderer = TrajectoryRenderer()
                 identity = initialize_identity()
+                session_state["frozen"] = False
                 renderer.add_step(
                     identity["phase"], identity["coherence"],
                     None, 0.0, "success"
