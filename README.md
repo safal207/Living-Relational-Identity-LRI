@@ -4,6 +4,16 @@ LRI defines non-operational invariants for protecting living identity in human-s
 
 The central idea is that identity should not be treated as a fixed profile, a static score, or a target for optimization. Identity remains living only if systems preserve revisability, relational context, and the human's authority to continue becoming over time.
 
+## Review links
+
+- Grant evidence: [docs/GRANT_EVIDENCE.md](docs/GRANT_EVIDENCE.md)
+- Security model: [docs/SECURITY_MODEL.md](docs/SECURITY_MODEL.md)
+- Trust model: [docs/architecture/lri-trust-model.md](docs/architecture/lri-trust-model.md)
+- Threat model: [docs/safety/identity_governance_threat_model.md](docs/safety/identity_governance_threat_model.md)
+- Identity schema: [protocol/lri/schema/identity.yaml](protocol/lri/schema/identity.yaml)
+- Lifecycle schema: [protocol/lri/schema/lifecycle.yaml](protocol/lri/schema/lifecycle.yaml)
+- Validation snapshot: [VALIDATION_RESULTS.md](VALIDATION_RESULTS.md)
+
 ## Problem
 
 Many systems model humans as stable, optimizable objects. That creates recurring risks such as:
