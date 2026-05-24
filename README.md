@@ -6,6 +6,7 @@ The central idea is that identity should not be treated as a fixed profile, a st
 
 ## Review links
 
+- Portfolio relationship: [docs/PORTFOLIO_RELATIONSHIP.md](docs/PORTFOLIO_RELATIONSHIP.md)
 - Grant evidence: [docs/GRANT_EVIDENCE.md](docs/GRANT_EVIDENCE.md)
 - Security model: [docs/SECURITY_MODEL.md](docs/SECURITY_MODEL.md)
 - Trust model: [docs/architecture/lri-trust-model.md](docs/architecture/lri-trust-model.md)
