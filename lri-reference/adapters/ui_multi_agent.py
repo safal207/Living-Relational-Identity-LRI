@@ -1,11 +1,6 @@
 from fastapi import FastAPI, Form, HTTPException, Response
 from fastapi.responses import HTMLResponse, JSONResponse
-import sys
-import os
 import uvicorn
-
-# Ensure we can import from services sibling directory
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from services.multi_agent_engine import MultiAgentEnvironment
 from services.security import authenticate_user, get_current_user, require_role

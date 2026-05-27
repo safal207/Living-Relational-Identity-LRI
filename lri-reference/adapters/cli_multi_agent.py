@@ -1,10 +1,5 @@
 import click
-import sys
-import os
 import json
-
-# Ensure we can import from sibling/parent directories
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from services.multi_agent_engine import MultiAgentEnvironment
 

@@ -1,9 +1,4 @@
-import sys
-import os
 import json
-
-# Ensure we can import from services sibling directory
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from api import subject
 from services.cycle_engine import run_identity_cycle

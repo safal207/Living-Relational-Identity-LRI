@@ -1,10 +1,5 @@
-import sys
-import os
 import pytest
 from fastapi.testclient import TestClient
-
-# Ensure imports work by adding parent directory to sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from adapters.ui_multi_agent import app
 from services.security import authenticate_user, encrypt_data, decrypt_data

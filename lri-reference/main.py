@@ -5,11 +5,6 @@ from security.access_control import AccessScope
 from security.audit_log import AuditLog
 from pydantic import BaseModel
 import uvicorn
-import os
-import sys
-
-# Ensure we can import from api sibling directory if running directly
-sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
 app = FastAPI(title="LRI Integration Service")
 

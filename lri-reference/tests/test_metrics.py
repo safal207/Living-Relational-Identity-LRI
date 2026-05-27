@@ -1,10 +1,5 @@
-import sys
-import os
 import pytest
 from collections import defaultdict
-
-# Ensure imports work
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from services.metrics_engine import MetricsEngine
 from services.drift_monitor import DriftMonitor

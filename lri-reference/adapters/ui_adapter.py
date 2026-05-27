@@ -1,11 +1,6 @@
 from fastapi import FastAPI, Form
 from fastapi.responses import HTMLResponse
-import sys
-import os
 import uvicorn
-
-# Ensure we can import from services sibling directory
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from services.cycle_engine import run_identity_cycle
 

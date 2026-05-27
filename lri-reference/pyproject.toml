@@ -1,0 +1,14 @@
+[project]
+name = "lri-reference"
+version = "1.0.0"
+description = "Living Relational Identity — reference implementation"
+requires-python = ">=3.11"
+dependencies = []
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["*"]

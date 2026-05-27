@@ -1,9 +1,4 @@
-import sys
-import os
 import json
-
-# Ensure we can import from api sibling directory if running directly
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from api import subject, relations, authority
 
