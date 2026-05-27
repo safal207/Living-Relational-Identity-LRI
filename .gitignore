@@ -1,3 +1,5 @@
 __pycache__/
 *.pyc
 lri-reference/dmp_log.jsonl
+
+dmp_log.jsonl
