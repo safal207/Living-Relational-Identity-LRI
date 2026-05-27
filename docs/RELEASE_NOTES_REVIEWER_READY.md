@@ -72,7 +72,6 @@ See `docs/NON_CLAIMS.md` for the full scope boundary. In brief, LRI is not:
 
 - In-memory storage: all state is lost on server restart
 - Hardcoded secrets: JWT key and passwords are in code (not production-ready)
-- `sys.path.append()` in multiple files — module structure pending refactor
 - Limited test coverage: 16 tests, no API route tests, no adapter tests
 - No CI/CD, Docker, or pre-commit automation
 - PR #28 (snapshot_diff.py) triaged but not merged
