@@ -31,17 +31,17 @@ def index():
             <p><small>Roles: admin/adminpass, agent_user/agentpass, observer/observerpass</small></p>
         </div>
 
-        <h3>Агенты:</h3>
+        <h3>Agents:</h3>
         <ul>{agents_list}</ul>
 
-        <h3>Добавить агента (Role: agent):</h3>
+        <h3>Add Agent (Role: agent):</h3>
         <form action="/add" method="post">
             Token: <input name="token" placeholder="Paste Token Here" required><br>
             Subject ID: <input name="subject"><br>
             <button type="submit">Add</button>
         </form>
 
-        <h3>Симуляция взаимодействия (Role: agent):</h3>
+        <h3>Simulate Interaction (Role: agent):</h3>
         <form action="/interact" method="post">
             Token: <input name="token" placeholder="Paste Token Here" required><br>
             Actor ID: <input name="actor"><br>
@@ -67,13 +67,13 @@ def add_agent(response: Response, subject: str = Form(...), token: str = Form(..
         user = get_current_user(token)
         require_role(user, "agent")
         env.add_agent(subject)
-        return f"<h3>Агент {subject} добавлен ✅</h3><a href='/'>Назад</a>"
+        return f"<h3>Agent {subject} added ✅</h3><a href='/'>Back</a>"
     except HTTPException as e:
         response.status_code = e.status_code
-        return f"<h3>Error: {e.detail}</h3><a href='/'>Назад</a>"
+        return f"<h3>Error: {e.detail}</h3><a href='/'>Back</a>"
     except Exception as e:
         response.status_code = 500
-        return f"<h3>Error: {e}</h3><a href='/'>Назад</a>"
+        return f"<h3>Error: {e}</h3><a href='/'>Back</a>"
 
 @app.post("/interact", response_class=HTMLResponse)
 def interact(response: Response, actor: str = Form(...), target: str = Form(...), action: str = Form(...), intention: str = Form(...), token: str = Form(...)):
@@ -85,13 +85,13 @@ def interact(response: Response, actor: str = Form(...), target: str = Form(...)
         for step in env.agents[actor]:
             traj_html += f"<li>{step['timestamp']}: {step['action']} ({step['intention']})</li>"
         traj_html += "</ul>"
-        return f"<h3>Взаимодействие завершено ✅</h3><p>Траектория ({actor}):</p>{traj_html}<a href='/'>Назад</a>"
+        return f"<h3>Interaction completed ✅</h3><p>Trajectory ({actor}):</p>{traj_html}<a href='/'>Back</a>"
     except HTTPException as e:
         response.status_code = e.status_code
-        return f"<h3>Error: {e.detail}</h3><a href='/'>Назад</a>"
+        return f"<h3>Error: {e.detail}</h3><a href='/'>Back</a>"
     except Exception as e:
         response.status_code = 500
-        return f"<h3>Error: {e}</h3><a href='/'>Назад</a>"
+        return f"<h3>Error: {e}</h3><a href='/'>Back</a>"
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8002)

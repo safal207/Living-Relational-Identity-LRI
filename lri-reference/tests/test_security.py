@@ -30,7 +30,7 @@ def test_add_agent_role_agent():
     # Agent role is allowed to add agents
     response = client.post("/add", data={"subject": "A_test_valid", "token": agent_token})
     assert response.status_code == 200
-    assert "Агент A_test_valid добавлен" in response.text
+    assert "Agent A_test_valid added" in response.text
 
 def test_add_agent_role_observer_forbidden():
     # Observer role is forbidden from adding agents
@@ -55,7 +55,7 @@ def test_agent_interact_allowed():
         "token": agent_token
     })
     assert response.status_code == 200
-    assert "Взаимодействие завершено" in response.text
+    assert "Interaction completed" in response.text
 
 def test_agent_interact_observer_forbidden():
     response = client.post("/interact", data={

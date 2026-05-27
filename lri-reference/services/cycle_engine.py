@@ -81,7 +81,7 @@ def run_identity_cycle(payload: dict):
 
     ltp.transmit_thread(snapshot)
 
-    # === Economic Hooks: создаём артефакт для экспорта ===
+    # === Economic Hooks: create artifact for export ===
     artifact_payload = {
         "identity_state": identity.snapshot(),
         "drift_score": drift_score,

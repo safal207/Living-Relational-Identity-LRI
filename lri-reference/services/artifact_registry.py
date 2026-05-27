@@ -2,7 +2,7 @@ from typing import List, Optional
 from models.economic_artifact import EconomicArtifact
 
 class ArtifactRegistry:
-    """Хранилище экспортируемых артефактов, read-only."""
+    """Registry of exportable artifacts, read-only."""
     def __init__(self):
         self._registry: List[EconomicArtifact] = []
 

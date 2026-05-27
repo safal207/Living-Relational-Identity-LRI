@@ -9,15 +9,15 @@ from services.cycle_engine import run_identity_cycle
 
 @click.group()
 def cli():
-    """LPI CLI Adapter — органическое взаимодействие с LRI"""
+    """LPI CLI Adapter — organic interaction with LRI"""
     pass
 
 @cli.command()
-@click.option("--subject", prompt="Subject ID", help="ID субъекта")
-@click.option("--action", prompt="Action", help="Действие пользователя")
-@click.option("--intention", prompt="Intention", help="Намерение действия")
+@click.option("--subject", prompt="Subject ID", help="Subject identifier")
+@click.option("--action", prompt="Action", help="User action")
+@click.option("--intention", prompt="Intention", help="Intention of the action")
 def simulate(subject, action, intention):
-    """Симуляция полного цикла идентичности"""
+    """Simulate a full identity cycle"""
     payload = {
         "subject_id": subject,
         "action": action,
@@ -26,8 +26,8 @@ def simulate(subject, action, intention):
     }
     try:
         result = run_identity_cycle(payload)
-        click.echo("✅ Цикл завершён!")
-        click.echo("Текущая траектория:")
+        click.echo("✅ Cycle completed!")
+        click.echo("Current trajectory:")
         for step in result["trajectory"]:
             click.echo(f"- {step['timestamp']}: {step['action']} ({step['intention']})")
     except Exception as e:

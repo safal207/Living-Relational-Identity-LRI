@@ -28,7 +28,7 @@ env = MultiAgentEnvironment()
 @click.group(invoke_without_command=True)
 @click.pass_context
 def cli(ctx):
-    """CLI для Multi-Agent LRI"""
+    """CLI for Multi-Agent LRI"""
     if ctx.invoked_subcommand is None:
         repl()
 
@@ -52,7 +52,7 @@ def repl():
                     continue
                 subject = parts[1]
                 env.add_agent(subject)
-                click.echo(f"✅ Агент {subject} добавлен")
+                click.echo(f"✅ Agent {subject} added")
 
             elif cmd == "interact":
                 if len(parts) < 5:
@@ -64,10 +64,9 @@ def repl():
                 intention = parts[4]
 
                 result = env.interact(actor, target, action, intention)
-                click.echo("✅ Взаимодействие завершено")
-                click.echo(f"Траектория Actor ({actor}):")
-                click.echo(json.dumps(env.agents[actor], indent=2))
-                click.echo(f"Траектория Target ({target}):")
+                click.echo("✅ Interaction completed")
+                click.echo(f"Trajectory Actor ({actor}):")
+                click.echo(f"Trajectory Target ({target}):")
                 click.echo(json.dumps(env.agents[target], indent=2))
 
             elif cmd == "status":

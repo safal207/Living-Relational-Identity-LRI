@@ -14,4 +14,4 @@ def export_artifact(artifact_type: str, subject_id: str):
 def list_artifacts(subject_id: str):
     return [a.export() for a in artifact_registry.list_exportable_artifacts(subject_id)]
 
-# TODO: добавить регистрацию артефактов из цикла identity
+# TODO: add artifact registration from identity cycle

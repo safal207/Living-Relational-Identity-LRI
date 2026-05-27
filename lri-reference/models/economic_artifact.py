@@ -3,7 +3,7 @@ from typing import Dict, Any
 
 class EconomicArtifact:
     """
-    Read-only артефакт доверия / отчёт для экспортирования.
+    Read-only trust artifact / report for export.
     """
     def __init__(self, subject_id: str, artifact_type: str, payload: Dict[str, Any]):
         self.subject_id = subject_id
@@ -12,7 +12,7 @@ class EconomicArtifact:
         self.created_at = datetime.utcnow()
 
     def export(self) -> Dict[str, Any]:
-        """Возвращает копию артефакта для внешнего использования."""
+        """Returns a copy of the artifact for external use."""
         return {
             "subject_id": self.subject_id,
             "artifact_type": self.artifact_type,

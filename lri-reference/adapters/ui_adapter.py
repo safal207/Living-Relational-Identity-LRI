@@ -35,7 +35,7 @@ def simulate(subject: str = Form(...), action: str = Form(...), intention: str =
     for step in result["trajectory"]:
         traj_html += f"<li>{step['timestamp']}: {step['action']} ({step['intention']})</li>"
     traj_html += "</ul>"
-    return f"<h3>Цикл завершён ✅</h3>{traj_html}<a href='/'>Назад</a>"
+    return f"<h3>Cycle completed ✅</h3>{traj_html}<a href='/'>Back</a>"
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8001)
