@@ -6,6 +6,8 @@ The central idea is that identity should not be treated as a fixed profile, a st
 
 ## Review links
 
+- Reviewer path: [docs/REVIEWER_PATH.md](docs/REVIEWER_PATH.md)
+- Non-claims: [docs/NON_CLAIMS.md](docs/NON_CLAIMS.md)
 - Portfolio relationship: [docs/PORTFOLIO_RELATIONSHIP.md](docs/PORTFOLIO_RELATIONSHIP.md)
 - Grant evidence: [docs/GRANT_EVIDENCE.md](docs/GRANT_EVIDENCE.md)
 - Security model: [docs/SECURITY_MODEL.md](docs/SECURITY_MODEL.md)
@@ -40,6 +42,20 @@ The project currently includes:
 - API and adapter skeletons
 - playground scenarios and snapshots
 - tests for continuity, metrics, observer behavior, DMP-lite integration, and security
+
+## What LRI is not
+
+LRI is not an identity classifier, profiling system, personality-scoring system, therapy tool, diagnostic system, social-credit system, or automated decisioning system about humans.
+
+It should not be used to infer who a person "really is", score people, diagnose people, rank people, or automate consequential treatment.
+
+LRI's narrower role is protective boundary reasoning:
+
+```text
+preserve human revisability, identity authority, relational context, and continuity boundaries
+```
+
+See [docs/NON_CLAIMS.md](docs/NON_CLAIMS.md) for the full scope boundary.
 
 ## Why This Matters for Safety
 
