@@ -17,6 +17,12 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r lri-reference/requirements.txt
-          pip install pyyaml
+          pip install pyyaml ruff black
+      - name: make lint
+        run: make lint
+        continue-on-error: true
+      - name: make format
+        run: make format
+        continue-on-error: true
       - name: make all
         run: make all
