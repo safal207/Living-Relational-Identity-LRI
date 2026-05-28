@@ -72,9 +72,7 @@ class TestProhibitedSchemaFields:
             if found:
                 violations.append((str(path.relative_to(PROJECT_ROOT)), found))
 
-        assert not violations, (
-            f"Prohibited schema fields found: {violations}"
-        )
+        assert not violations, f"Prohibited schema fields found: {violations}"
 
     def test_no_prohibited_endpoints_in_reference(self, prohibited_patterns):
         prohibited = set(prohibited_patterns["prohibited_api_endpoints"])
@@ -88,9 +86,7 @@ class TestProhibitedSchemaFields:
             if endpoint in content:
                 violations.append(endpoint)
 
-        assert not violations, (
-            f"Prohibited API endpoints in main.py: {violations}"
-        )
+        assert not violations, f"Prohibited API endpoints in main.py: {violations}"
 
 
 class TestProhibitedFramingInDocs:
@@ -132,9 +128,7 @@ class TestProhibitedFramingInDocs:
                 if phrase.lower() in content:
                     violations.append((str(path.relative_to(PROJECT_ROOT)), phrase))
 
-        assert not violations, (
-            f"Prohibited phrases in docs (outside allowlist): {violations}"
-        )
+        assert not violations, f"Prohibited phrases in docs (outside allowlist): {violations}"
 
     def test_no_prohibited_terms_in_code_comments(self, prohibited_patterns):
         prohibited = set(prohibited_patterns["prohibited_terms"])
@@ -149,13 +143,9 @@ class TestProhibitedFramingInDocs:
                     comment_text = stripped.lstrip("#").strip().lower()
                     for term in prohibited:
                         if term.replace("_", " ") in comment_text:
-                            violations.append(
-                                (str(path.relative_to(PROJECT_ROOT)), line_num, term)
-                            )
+                            violations.append((str(path.relative_to(PROJECT_ROOT)), line_num, term))
 
-        assert not violations, (
-            f"Prohibited terms in code comments: {violations}"
-        )
+        assert not violations, f"Prohibited terms in code comments: {violations}"
 
 
 class TestBoundaryRulesEnforced:
@@ -183,9 +173,7 @@ class TestBoundaryRulesEnforced:
         ]
 
         for entry in required_entries:
-            assert entry in content, (
-                f"NON_CLAIMS.md must mention '{entry}'"
-            )
+            assert entry in content, f"NON_CLAIMS.md must mention '{entry}'"
 
     def test_required_disclaimers_present(self, boundary_rules):
         for disclaimer in boundary_rules["required_disclaimers"]:
@@ -194,15 +182,19 @@ class TestBoundaryRulesEnforced:
 
             content = location.read_text(encoding="utf-8").lower()
             assert disclaimer["text"].lower() in content, (
-                f"Required disclaimer missing from {disclaimer['location']}: "
-                f"{disclaimer['text']}"
+                f"Required disclaimer missing from {disclaimer['location']}: " f"{disclaimer['text']}"
             )
 
     def test_allowed_capabilities_are_protective(self, boundary_rules):
         """All allowed capabilities must be protective, not classificatory."""
         protective_keywords = [
-            "track", "detect", "record", "enforce",
-            "simulate", "generate", "write",
+            "track",
+            "detect",
+            "record",
+            "enforce",
+            "simulate",
+            "generate",
+            "write",
         ]
 
         for cap in boundary_rules["allowed_capabilities"]:
@@ -221,13 +213,9 @@ class TestBoundaryRulesEnforced:
             for behavior in prohibited:
                 snake_case = behavior.replace("_", " ")
                 if snake_case in content:
-                    violations.append(
-                        (str(path.relative_to(PROJECT_ROOT)), behavior)
-                    )
+                    violations.append((str(path.relative_to(PROJECT_ROOT)), behavior))
 
-        assert not violations, (
-            f"Prohibited behaviors referenced in reference implementation: {violations}"
-        )
+        assert not violations, f"Prohibited behaviors referenced in reference implementation: {violations}"
 
 
 class TestIdentityAuthorityPreserved:
@@ -237,17 +225,13 @@ class TestIdentityAuthorityPreserved:
         main_path = REFERENCE_DIR / "main.py"
         content = main_path.read_text(encoding="utf-8")
 
-        assert "/subject" in content, (
-            "Subject endpoints must exist for identity authority"
-        )
+        assert "/subject" in content, "Subject endpoints must exist for identity authority"
 
     def test_authority_check_exists(self):
         main_path = REFERENCE_DIR / "main.py"
         content = main_path.read_text(encoding="utf-8")
 
-        assert "authority" in content.lower(), (
-            "Authority check must exist for identity authority"
-        )
+        assert "authority" in content.lower(), "Authority check must exist for identity authority"
 
     def test_observer_is_read_only(self):
         """Observer must not have write access to identity state."""
@@ -255,11 +239,8 @@ class TestIdentityAuthorityPreserved:
         content = main_path.read_text(encoding="utf-8")
 
         observer_routes = [
-            line for line in content.splitlines()
-            if "/observer" in line and ("@app" in line or "def " in line)
+            line for line in content.splitlines() if "/observer" in line and ("@app" in line or "def " in line)
         ]
 
         for route in observer_routes:
-            assert "post" not in route.lower(), (
-                f"Observer route must not be POST (write): {route}"
-            )
+            assert "post" not in route.lower(), f"Observer route must not be POST (write): {route}"

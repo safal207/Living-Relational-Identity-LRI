@@ -1,6 +1,6 @@
-from click.testing import CliRunner
 from adapters.cli_adapter import cli as cli_adapter
 from adapters.cli_multi_agent import cli as cli_multi_agent
+from click.testing import CliRunner
 from fastapi.testclient import TestClient
 
 
