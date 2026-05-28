@@ -1,8 +1,6 @@
-import pytest
-from collections import defaultdict
-
-from services.metrics_engine import MetricsEngine
 from services.drift_monitor import DriftMonitor
+from services.metrics_engine import MetricsEngine
+
 
 def test_metrics_engine_record():
     engine = MetricsEngine()
@@ -15,6 +13,7 @@ def test_metrics_engine_record():
 
     snapshot_empty = engine.snapshot("agent_2")
     assert snapshot_empty == {}
+
 
 def test_drift_monitor_calculate():
     monitor = DriftMonitor()

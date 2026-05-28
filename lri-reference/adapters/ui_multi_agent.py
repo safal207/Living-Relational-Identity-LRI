@@ -1,12 +1,12 @@
-from fastapi import FastAPI, Form, HTTPException, Response
-from fastapi.responses import HTMLResponse, JSONResponse
 import uvicorn
-
+from fastapi import FastAPI, Form, HTTPException, Response
+from fastapi.responses import HTMLResponse
 from services.multi_agent_engine import MultiAgentEnvironment
 from services.security import authenticate_user, get_current_user, require_role
 
 app = FastAPI(title="Multi-Agent LRI UI")
 env = MultiAgentEnvironment()
+
 
 @app.get("/", response_class=HTMLResponse)
 def index():
@@ -49,12 +49,14 @@ def index():
     </html>
     """
 
+
 @app.post("/login")
 def login(username: str = Form(...), password: str = Form(...)):
     token = authenticate_user(username, password)
     if not token:
         return {"error": "Invalid credentials"}
     return {"token": token, "info": "Copy this token and paste it into the forms"}
+
 
 @app.post("/add", response_class=HTMLResponse)
 def add_agent(response: Response, subject: str = Form(...), token: str = Form(...)):
@@ -70,8 +72,16 @@ def add_agent(response: Response, subject: str = Form(...), token: str = Form(..
         response.status_code = 500
         return f"<h3>Error: {e}</h3><a href='/'>Back</a>"
 
+
 @app.post("/interact", response_class=HTMLResponse)
-def interact(response: Response, actor: str = Form(...), target: str = Form(...), action: str = Form(...), intention: str = Form(...), token: str = Form(...)):
+def interact(
+    response: Response,
+    actor: str = Form(...),
+    target: str = Form(...),
+    action: str = Form(...),
+    intention: str = Form(...),
+    token: str = Form(...),
+):
     try:
         user = get_current_user(token)
         require_role(user, "agent")
@@ -87,6 +97,7 @@ def interact(response: Response, actor: str = Form(...), target: str = Form(...)
     except Exception as e:
         response.status_code = 500
         return f"<h3>Error: {e}</h3><a href='/'>Back</a>"
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8002)

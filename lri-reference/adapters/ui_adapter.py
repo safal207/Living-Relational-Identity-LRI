@@ -1,10 +1,10 @@
+import uvicorn
 from fastapi import FastAPI, Form
 from fastapi.responses import HTMLResponse
-import uvicorn
-
 from services.cycle_engine import run_identity_cycle
 
 app = FastAPI(title="LPI UI Adapter")
+
 
 @app.get("/", response_class=HTMLResponse)
 def index():
@@ -22,6 +22,7 @@ def index():
     </html>
     """
 
+
 @app.post("/simulate", response_class=HTMLResponse)
 def simulate(subject: str = Form(...), action: str = Form(...), intention: str = Form(...)):
     payload = {"subject_id": subject, "action": action, "intention": intention, "context": {}}
@@ -31,6 +32,7 @@ def simulate(subject: str = Form(...), action: str = Form(...), intention: str =
         traj_html += f"<li>{step['timestamp']}: {step['action']} ({step['intention']})</li>"
     traj_html += "</ul>"
     return f"<h3>Cycle completed ✅</h3>{traj_html}<a href='/'>Back</a>"
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8001)

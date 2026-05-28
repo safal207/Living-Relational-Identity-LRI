@@ -1,6 +1,8 @@
-from api import relations
 import datetime
 import uuid
+
+from api import relations
+
 
 def transmit_thread(payload):
     """
@@ -15,7 +17,7 @@ def transmit_thread(payload):
         "subject_id": subject_id,
         "type": "IDENTITY_SNAPSHOT",
         "payload": payload,
-        "timestamp": timestamp
+        "timestamp": timestamp,
     }
 
     # Link via LRI if subject exists in payload

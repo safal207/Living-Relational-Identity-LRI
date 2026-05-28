@@ -1,8 +1,11 @@
 from typing import List, Optional
+
 from models.economic_artifact import EconomicArtifact
+
 
 class ArtifactRegistry:
     """Registry of exportable artifacts, read-only."""
+
     def __init__(self):
         self._registry: List[EconomicArtifact] = []
 
@@ -17,6 +20,7 @@ class ArtifactRegistry:
             if a.subject_id == subject_id and a.artifact_type == artifact_type:
                 return a
         return None
+
 
 # Singleton instance to be shared across services and API
 artifact_registry = ArtifactRegistry()

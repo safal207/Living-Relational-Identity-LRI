@@ -1,5 +1,6 @@
-from storage.dmp_store import DMPStore
 from services.dmp_writer import DMPWriter
+from storage.dmp_store import DMPStore
+
 
 def test_dmp_append(tmp_path):
     store = DMPStore(path=tmp_path / "dmp.jsonl")

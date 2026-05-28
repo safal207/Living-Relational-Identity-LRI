@@ -1,9 +1,10 @@
+from api.subject import subjects
 from fastapi.testclient import TestClient
 from main import app, key_store
-from security.access_control import APIKey, AccessScope
-from api.subject import subjects
+from security.access_control import AccessScope, APIKey
 
 client = TestClient(app)
+
 
 def setup_module():
     subjects.clear()
@@ -48,7 +49,9 @@ class TestRelationsAPI:
         assert response.status_code == 200
 
     def test_dmp_record_creates_relation(self):
-        response = client.post("/dmp_record/", json={"record_id": "rec-1", "subject_id": "smoke-1", "decision": "approve"})
+        response = client.post(
+            "/dmp_record/", json={"record_id": "rec-1", "subject_id": "smoke-1", "decision": "approve"}
+        )
         assert response.status_code == 200
 
     def test_list_relations_after_events(self):
@@ -98,11 +101,9 @@ class TestObserverAPI:
 
 class TestSimulateCycleAPI:
     def test_simulate_cycle(self):
-        response = client.post("/simulate/cycle", json={
-            "subject_id": "smoke-1",
-            "action": "login",
-            "intention": "access"
-        })
+        response = client.post(
+            "/simulate/cycle", json={"subject_id": "smoke-1", "action": "login", "intention": "access"}
+        )
         assert response.status_code == 200
         data = response.json()
         assert data["status"] == "cycle_completed"

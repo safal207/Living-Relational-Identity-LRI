@@ -1,28 +1,36 @@
-import json
 import hashlib
+import json
+import threading
 from datetime import datetime, timezone
 from pathlib import Path
-import threading
-import os
 
 SNAPSHOTS_DIR = Path(__file__).parent / "snapshots"
 _snapshot_lock = threading.Lock()  # Global lock for snapshot creation queue
 
+
 class SnapshotError(Exception):
     """Base exception for snapshot errors."""
+
     pass
+
 
 class SnapshotExistsError(SnapshotError):
     """Raised when trying to overwrite an existing snapshot."""
+
     pass
+
 
 class SnapshotNotFoundError(SnapshotError):
     """Raised when a requested snapshot does not exist."""
+
     pass
+
 
 class ChecksumError(SnapshotError):
     """Raised when snapshot integrity verification fails."""
+
     pass
+
 
 def compute_checksum(events: list) -> str:
     """Compute SHA256 checksum of trajectory events.
@@ -34,10 +42,11 @@ def compute_checksum(events: list) -> str:
     events_json = json.dumps(
         events,
         sort_keys=True,
-        separators=(',', ':'),  # Compact, no whitespace variations
-        default=str  # Handle datetime objects gracefully
+        separators=(",", ":"),  # Compact, no whitespace variations
+        default=str,  # Handle datetime objects gracefully
     )
     return hashlib.sha256(events_json.encode()).hexdigest()[:16]
+
 
 def create_snapshot(snapshot_id: str, trajectory_data: dict) -> dict:
     """Freeze current trajectory safely with atomic write and queue.
@@ -54,7 +63,7 @@ def create_snapshot(snapshot_id: str, trajectory_data: dict) -> dict:
         SnapshotExistsError: If snapshot already exists.
     """
     # Sanitize snapshot ID (security: prevent path traversal)
-    safe_id = "".join([c for c in snapshot_id if c.isalnum() or c in ('-', '_')])
+    safe_id = "".join([c for c in snapshot_id if c.isalnum() or c in ("-", "_")])
     if not safe_id:
         raise ValueError("Invalid snapshot ID: must contain alphanumeric characters")
 
@@ -67,18 +76,19 @@ def create_snapshot(snapshot_id: str, trajectory_data: dict) -> dict:
         "id": safe_id,
         "created_at": datetime.now(timezone.utc).isoformat(),
         "trajectory": trajectory_data,
-        "checksum": compute_checksum(events)
+        "checksum": compute_checksum(events),
     }
 
     # Queue snapshot creation
     with _snapshot_lock:
         try:
-            with open(filepath, 'x') as f:  # 'x' — atomic write
+            with open(filepath, "x") as f:  # 'x' — atomic write
                 json.dump(snapshot, f, indent=2, default=str)
         except FileExistsError:
             raise SnapshotExistsError(f"Snapshot '{safe_id}' already exists. Choose a different name.")
 
     return snapshot
+
 
 def list_snapshots() -> list:
     """List all saved snapshots with metadata.
@@ -108,13 +118,15 @@ def list_snapshots() -> list:
             except ChecksumError:
                 is_valid = False
 
-            snapshots.append({
-                "id": snapshot.get("id", filepath.stem),
-                "created_at": snapshot.get("created_at"),
-                "events_count": len(events),
-                "phase": current_state.get("phase", "unknown"),
-                "valid": is_valid
-            })
+            snapshots.append(
+                {
+                    "id": snapshot.get("id", filepath.stem),
+                    "created_at": snapshot.get("created_at"),
+                    "events_count": len(events),
+                    "phase": current_state.get("phase", "unknown"),
+                    "valid": is_valid,
+                }
+            )
         except Exception:
             # Skip corrupted files that aren't valid JSON
             continue
@@ -122,6 +134,7 @@ def list_snapshots() -> list:
     # Sort by creation time (newest first)
     snapshots.sort(key=lambda x: x.get("created_at", ""), reverse=True)
     return snapshots
+
 
 def load_snapshot(snapshot_id: str) -> dict:
     """Load snapshot by ID.
@@ -138,7 +151,7 @@ def load_snapshot(snapshot_id: str) -> dict:
         ChecksumError: If integrity check fails.
     """
     # Sanitize ID
-    safe_id = "".join([c for c in snapshot_id if c.isalnum() or c in ('-', '_')])
+    safe_id = "".join([c for c in snapshot_id if c.isalnum() or c in ("-", "_")])
     if not safe_id:
         raise ValueError("Invalid snapshot ID")
 
@@ -153,6 +166,7 @@ def load_snapshot(snapshot_id: str) -> dict:
     verify_checksum(snapshot)
 
     return snapshot
+
 
 def verify_checksum(snapshot: dict):
     """Verify snapshot integrity.

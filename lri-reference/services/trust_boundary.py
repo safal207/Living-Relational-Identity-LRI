@@ -1,4 +1,5 @@
-from typing import Any, Dict, Optional
+from typing import Any
+
 
 class TrustBoundary:
     """
@@ -29,7 +30,6 @@ class TrustBoundary:
     # 3. Decision Memory (DMP)
     # LRI ensures decisions are recorded immutably.
 
-
     # --- NON-GOALS (What LRI DOES NOT DO) ---
 
     # 1. Execution
@@ -41,6 +41,7 @@ class TrustBoundary:
 
     # 3. Judgment
     # LRI does not judge "good" or "bad", only "authorized" or "unauthorized".
+
 
 # Explicit export for clarity
 TRUST_BOUNDARY_VERSION = "1.0"

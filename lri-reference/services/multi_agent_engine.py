@@ -2,6 +2,7 @@ import datetime
 
 from services.cycle_engine import run_identity_cycle
 
+
 class MultiAgentEnvironment:
     def __init__(self):
         # In a real persistence layer, this would load from DB.
@@ -29,13 +30,13 @@ class MultiAgentEnvironment:
         # 2. Target receives effect (Simplified LTP reception)
         # We simulate the target's trajectory being influenced.
         if target_id not in self.agents:
-             self.agents[target_id] = []
+            self.agents[target_id] = []
 
         influence_event = {
             "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
             "action": f"influenced_by_{actor_id}",
             "intention": f"reaction_to_{intention}",
-            "context": {"source_action": action}
+            "context": {"source_action": action},
         }
 
         self.agents[target_id].append(influence_event)

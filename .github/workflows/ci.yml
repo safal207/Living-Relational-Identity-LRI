@@ -20,9 +20,7 @@ jobs:
           pip install pyyaml ruff black
       - name: make lint
         run: make lint
-        continue-on-error: true
       - name: make format
         run: make format
-        continue-on-error: true
       - name: make all
         run: make all

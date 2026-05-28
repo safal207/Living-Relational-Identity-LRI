@@ -1,5 +1,6 @@
 from typing import List
 
+
 class DriftMonitor:
     def calculate(self, intentions: List[str]) -> float:
         """
@@ -13,6 +14,7 @@ class DriftMonitor:
         if not intentions:
             return 0.0
         return len(set(intentions)) / len(intentions)
+
 
 # Global instance
 drift_monitor = DriftMonitor()

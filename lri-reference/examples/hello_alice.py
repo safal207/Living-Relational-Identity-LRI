@@ -3,6 +3,7 @@ import json
 from api import subject
 from services.cycle_engine import run_identity_cycle
 
+
 def main():
     print("--- Hello, Alice! (LRI Quick Start) ---")
 
@@ -10,12 +11,9 @@ def main():
 
     # 1. Create Identity
     print(f"\n1. Creating Identity for {subject_id}...")
-    result = subject.create_subject(subject_id, {
-        "id": subject_id,
-        "name": "Alice",
-        "role": "student",
-        "trajectory": []
-    })
+    result = subject.create_subject(
+        subject_id, {"id": subject_id, "name": "Alice", "role": "student", "trajectory": []}
+    )
     print(f"   Created: {result['subject']['name']} (Role: {result['subject']['role']})")
 
     # 2. Apply Action (Run Cycle)
@@ -24,7 +22,7 @@ def main():
         "subject_id": subject_id,
         "action": "complete_module_1",
         "intention": "learn_basics",
-        "context": {"course": "LRI_101"}
+        "context": {"course": "LRI_101"},
     }
 
     # Run the LRI cycle
@@ -39,6 +37,7 @@ def main():
     print(f"\n   Alice's Coherence Drift: {drift:.2f}")
 
     print("\n--- Done! Alice has evolved. ---")
+
 
 if __name__ == "__main__":
     main()

@@ -1,6 +1,8 @@
-from pydantic import BaseModel
-from typing import Optional, List
 from datetime import datetime
+from typing import List
+
+from pydantic import BaseModel
+
 
 class AuditSnapshot(BaseModel):
     subject_id: str

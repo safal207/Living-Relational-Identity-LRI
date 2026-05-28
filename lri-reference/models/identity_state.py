@@ -1,6 +1,8 @@
-from api import subject
 import hashlib
 import json
+
+from api import subject
+
 
 class IdentityState:
     def __init__(self, subject_id, trajectory=None, last_hash=None):
@@ -32,19 +34,17 @@ class IdentityState:
 
         # Update state
         self.last_hash = new_hash
-        self.trajectory.append({
-            "action": decision.get("action"),
-            "intention": decision.get("intention"),
-            "timestamp": decision.get("timestamp"),
-            "continuity_hash": new_hash
-        })
+        self.trajectory.append(
+            {
+                "action": decision.get("action"),
+                "intention": decision.get("intention"),
+                "timestamp": decision.get("timestamp"),
+                "continuity_hash": new_hash,
+            }
+        )
 
     def snapshot(self):
-        return {
-            "subject_id": self.subject_id,
-            "trajectory": self.trajectory,
-            "head_hash": self.last_hash
-        }
+        return {"subject_id": self.subject_id, "trajectory": self.trajectory, "head_hash": self.last_hash}
 
     @classmethod
     def load(cls, subject_id):
@@ -69,19 +69,13 @@ class IdentityState:
 
     def save(self):
         # Update the subject's metadata with the new trajectory and hash
-        update_data = {
-            "trajectory": self.trajectory,
-            "head_hash": self.last_hash
-        }
+        update_data = {"trajectory": self.trajectory, "head_hash": self.last_hash}
 
         current = subject.get_subject(self.subject_id)
         if "error" in current:
             # Create if doesn't exist (auto-provisioning for simulation)
-            subject.create_subject(self.subject_id, {
-                "id": self.subject_id,
-                "name": "Simulated Agent",
-                "role": "simulated",
-                **update_data
-            })
+            subject.create_subject(
+                self.subject_id, {"id": self.subject_id, "name": "Simulated Agent", "role": "simulated", **update_data}
+            )
         else:
             subject.update_subject(self.subject_id, update_data)

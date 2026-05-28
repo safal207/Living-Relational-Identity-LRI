@@ -1,12 +1,10 @@
 from collections import defaultdict
 
+
 class MetricsEngine:
     def __init__(self):
         # Stores raw event data for each agent
-        self._data = defaultdict(lambda: {
-            "actions": 0,
-            "intentions": []
-        })
+        self._data = defaultdict(lambda: {"actions": 0, "intentions": []})
 
     def record(self, agent_id: str, action: str, intention: str):
         """
@@ -22,6 +20,7 @@ class MetricsEngine:
         Returns a snapshot of the raw metrics for an agent.
         """
         return dict(self._data.get(agent_id, {}))
+
 
 # Global instance for the reference implementation
 metrics_engine = MetricsEngine()

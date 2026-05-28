@@ -1,6 +1,8 @@
-from api import relations
 import datetime
 import uuid
+
+from api import relations
+
 
 def record_decision(subject_id, action, intention=None, context=None):
     """
@@ -16,7 +18,7 @@ def record_decision(subject_id, action, intention=None, context=None):
         "intention": intention,
         "context": context,
         "timestamp": timestamp,
-        "decision": "approved" # Simplified for simulation
+        "decision": "approved",  # Simplified for simulation
     }
 
     # Link via LRI

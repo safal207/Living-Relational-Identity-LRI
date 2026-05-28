@@ -1,51 +1,51 @@
-import yaml
+import argparse
+import glob
 import os
 import sys
-import glob
 import time
-import argparse
+
+import yaml
 
 try:
     import snapshots_manager
 except ImportError:
     # Handle direct execution
     import sys
+
     sys.path.append(os.path.dirname(os.path.abspath(__file__)))
     import snapshots_manager
 
 # Mock Coherence Logic
 COHERENCE_RULES = {
-    "add_relation": 0.30,      # Increased to ensure activation (0.18+0.25-0.10+0.30 = 0.63 > 0.6)
+    "add_relation": 0.30,  # Increased to ensure activation (0.18+0.25-0.10+0.30 = 0.63 > 0.6)
     "peer_relation": 0.15,
     "mentor_relation": 0.25,
-    "drift_event": -0.10,      # Reduced penalty to allow recovery
+    "drift_event": -0.10,  # Reduced penalty to allow recovery
 }
 
 # Interactive Mode Rules
-INTERACTIVE_RULES = {
-    "mentor": 0.15,
-    "peer": 0.15
-}
+INTERACTIVE_RULES = {"mentor": 0.15, "peer": 0.15}
 
-TRANSITION_THRESHOLDS = {
-    "active": 0.5
-}
+TRANSITION_THRESHOLDS = {"active": 0.5}
 
 MAX_MENTORS = 2
+
 
 class TrajectoryRenderer:
     def __init__(self):
         self.history = []
 
     def add_step(self, phase, coherence, event, delta, status, error_msg=None):
-        self.history.append({
-            "phase": phase,
-            "coherence": coherence,
-            "event": event,
-            "delta": delta,
-            "status": status,
-            "error_msg": error_msg
-        })
+        self.history.append(
+            {
+                "phase": phase,
+                "coherence": coherence,
+                "event": event,
+                "delta": delta,
+                "status": status,
+                "error_msg": error_msg,
+            }
+        )
 
     def render(self, identity_id):
         print(f"\nIdentity Trajectory: {identity_id}\n")
@@ -54,10 +54,10 @@ class TrajectoryRenderer:
             # Draw Connector
             if i > 0:
                 print("        |")
-                sign = "+" if step['delta'] >= 0 else ""
+                sign = "+" if step["delta"] >= 0 else ""
                 delta_str = f"({sign}{step['delta']:.2f})"
 
-                event_name = step['event'] if step['event'] else "unknown"
+                event_name = step["event"] if step["event"] else "unknown"
                 if len(event_name) > 30:
                     event_name = event_name[:27] + "..."
 
@@ -65,22 +65,23 @@ class TrajectoryRenderer:
                 print("        v")
 
             # Draw Node
-            if step['error_msg'] == "LRI_004_INVALID_LIFECYCLE_TRANSITION":
-                print(f"[ ERROR: Invalid transition ] ✗")
+            if step["error_msg"] == "LRI_004_INVALID_LIFECYCLE_TRANSITION":
+                print("[ ERROR: Invalid transition ] ✗")
             else:
                 phase_str = f"{step['phase']:<9}"
                 coh_str = f"{step['coherence']:.2f}"
                 box = f"[ {phase_str} | {coh_str} ]"
 
                 suffix = ""
-                if step['status'] == 'drift':
+                if step["status"] == "drift":
                     suffix = " ⚠ DRIFT"
-                elif step['status'] == 'error':
+                elif step["status"] == "error":
                     suffix = " ✗"
                 elif i == len(self.history) - 1:
-                     suffix = " ✓"
+                    suffix = " ✓"
 
                 print(f"{box}{suffix}")
+
 
 def apply_mock_coherence(identity, scenario):
     """
@@ -91,17 +92,17 @@ def apply_mock_coherence(identity, scenario):
     delta = COHERENCE_RULES.get(intent, 0.0)
 
     # Apply delta
-    identity["coherence"] = round(
-        max(0.0, min(1.0, identity["coherence"] + delta)), 2
-    )
+    identity["coherence"] = round(max(0.0, min(1.0, identity["coherence"] + delta)), 2)
+
 
 def initialize_identity():
     return {
         "id": "interactive-session",
         "phase": "emerging",
         "coherence": 0.20,
-        "relations": [], # List of types: 'mentor', 'peer'
+        "relations": [],  # List of types: 'mentor', 'peer'
     }
+
 
 def process_command(cmd_str, identity, renderer, session_state=None):
     if session_state is None:
@@ -121,14 +122,10 @@ def process_command(cmd_str, identity, renderer, session_state=None):
             return
         snapshot_id = args[0]
         try:
-            trajectory_data = {
-                "subject_id": identity["id"],
-                "events": renderer.history,
-                "current_state": identity
-            }
+            trajectory_data = {"subject_id": identity["id"], "events": renderer.history, "current_state": identity}
             snap = snapshots_manager.create_snapshot(snapshot_id, trajectory_data)
             print(f"✓ Snapshot '{snap['id']}' created at coherence {identity['coherence']:.2f}")
-            print(f"\nFrozen trajectory:")
+            print("\nFrozen trajectory:")
             print(f"  Events: {len(renderer.history)}")
             print(f"  Phase: {identity['phase']}")
             print(f"  Checksum: {snap['checksum']}...")
@@ -145,8 +142,8 @@ def process_command(cmd_str, identity, renderer, session_state=None):
         print(f"{'ID':<15} | {'Created':<20} | {'Phase':<10} | {'Events':<8} | {'Valid'}")
         print("-" * 70)
         for s in snaps:
-            created = s['created_at'].replace('T', ' ')[:16]
-            valid_mark = "✓" if s['valid'] else "✗"
+            created = s["created_at"].replace("T", " ")[:16]
+            valid_mark = "✓" if s["valid"] else "✗"
             print(f"{s['id']:<15} | {created:<20} | {s['phase']:<10} | {s['events_count']:<8} | {valid_mark}")
         print("")
         return
@@ -158,7 +155,7 @@ def process_command(cmd_str, identity, renderer, session_state=None):
         snapshot_id = args[0]
 
         confirm = input(f"⚠ This will replace current trajectory with '{snapshot_id}'. Continue? (y/n): ")
-        if confirm.lower() != 'y':
+        if confirm.lower() != "y":
             print("Cancelled.")
             return
 
@@ -179,7 +176,7 @@ def process_command(cmd_str, identity, renderer, session_state=None):
             session_state["frozen"] = True
 
             print(f"\n✓ Switched to snapshot '{snapshot_id}'")
-            renderer.render(identity['id'])
+            renderer.render(identity["id"])
             print("\n⚠ Trajectory is READ-ONLY. Type 'continue' to resume.")
 
         except Exception as e:
@@ -225,7 +222,7 @@ def process_command(cmd_str, identity, renderer, session_state=None):
         return
 
     elif cmd == "show_trajectory":
-        renderer.render(identity['id'])
+        renderer.render(identity["id"])
         return
 
     elif cmd == "reset":
@@ -240,28 +237,20 @@ def process_command(cmd_str, identity, renderer, session_state=None):
 
         # Check warnings
         if rel_type == "mentor":
-            mentor_count = identity['relations'].count("mentor")
+            mentor_count = identity["relations"].count("mentor")
             if mentor_count >= MAX_MENTORS:
                 print(f"⚠ Already have {mentor_count} mentors (recommended max: {MAX_MENTORS})")
 
         # Apply effect
         delta = INTERACTIVE_RULES.get(rel_type, 0.0)
-        identity["coherence"] = round(
-            max(0.0, min(1.0, identity["coherence"] + delta)), 2
-        )
-        identity['relations'].append(rel_type)
+        identity["coherence"] = round(max(0.0, min(1.0, identity["coherence"] + delta)), 2)
+        identity["relations"].append(rel_type)
 
         print(f"✓ {rel_type.capitalize()} added. Coherence: {start_coherence:.2f} → {identity['coherence']:.2f}")
 
         # Update renderer
-        renderer.add_step(
-            identity["phase"],
-            identity["coherence"],
-            f"{rel_type}_added",
-            delta,
-            "success"
-        )
-        renderer.render(identity['id'])
+        renderer.add_step(identity["phase"], identity["coherence"], f"{rel_type}_added", delta, "success")
+        renderer.render(identity["id"])
 
     elif cmd == "transition":
         if len(args) < 1:
@@ -276,7 +265,7 @@ def process_command(cmd_str, identity, renderer, session_state=None):
                 print(f"✗ Cannot transition: coherence too low ({identity['coherence']:.2f} < {threshold})")
                 print(f"  Required: coherence >= {threshold}")
 
-                print(f"\nCurrent state:")
+                print("\nCurrent state:")
                 print(f"  Phase: {identity['phase']}")
                 print(f"  Coherence: {identity['coherence']:.2f}")
                 return
@@ -284,20 +273,15 @@ def process_command(cmd_str, identity, renderer, session_state=None):
                 identity["phase"] = "active"
                 print(f"✓ Transitioned to {target_phase}")
 
-                renderer.add_step(
-                    identity["phase"],
-                    identity["coherence"],
-                    "phase_transition",
-                    0.0,
-                    "success"
-                )
-                renderer.render(identity['id'])
+                renderer.add_step(identity["phase"], identity["coherence"], "phase_transition", 0.0, "success")
+                renderer.render(identity["id"])
         else:
             print(f"✗ Unknown or unsupported phase: {target_phase}")
 
     else:
         print(f"✗ Unknown command: {cmd}")
         print("Type 'help' for available commands")
+
 
 def interactive_mode():
     print("LRI Playground - Interactive Mode")
@@ -308,10 +292,7 @@ def interactive_mode():
     session_state = {"frozen": False}
 
     # Initial state step
-    renderer.add_step(
-        identity["phase"], identity["coherence"],
-        None, 0.0, "success"
-    )
+    renderer.add_step(identity["phase"], identity["coherence"], None, 0.0, "success")
 
     while True:
         try:
@@ -332,15 +313,13 @@ def interactive_mode():
                 renderer = TrajectoryRenderer()
                 identity = initialize_identity()
                 session_state["frozen"] = False
-                renderer.add_step(
-                    identity["phase"], identity["coherence"],
-                    None, 0.0, "success"
-                )
+                renderer.add_step(identity["phase"], identity["coherence"], None, 0.0, "success")
 
         except KeyboardInterrupt:
             print("\nUse 'exit' to quit")
         except Exception as e:
             print(f"✗ Error: {e}")
+
 
 def run_playground():
     print("\n🚀 Starting LRI Interactive Playground...\n")
@@ -360,12 +339,12 @@ def run_playground():
 
     for filepath in scenario_files:
         filename = os.path.basename(filepath)
-        print(f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
         print(f"Running Scenario: {filename}")
-        print(f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
+        print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
 
         try:
-            with open(filepath, 'r') as f:
+            with open(filepath, "r") as f:
                 scenario = yaml.safe_load(f)
         except Exception as e:
             print(f"❌ Failed to load YAML: {e}")
@@ -394,14 +373,14 @@ def run_playground():
             continue
 
         # Display Initial State (Before Logic)
-        print(f"Initial State:")
+        print("Initial State:")
         print(f"  Phase: {start_phase}")
         print(f"  Coherence: {start_coherence:.2f}")
 
         # Simulate processing
         intent = scenario.get("intent")
         if intent:
-            print(f"\nIntent: \"{intent}\"")
+            print(f'\nIntent: "{intent}"')
         print("")
 
         expected = scenario.get("expected", {})
@@ -417,13 +396,13 @@ def run_playground():
             is_drift = True
 
             if "change" in scenario and "unauthorized_field" in scenario["change"]:
-                 error_caught = "LRI_007_DRIFT_DETECTED"
+                error_caught = "LRI_007_DRIFT_DETECTED"
 
         # Scenario 04: Invalid Transition Check
         if "requested_transition" in scenario:
-             trans = scenario["requested_transition"]
-             if trans.get("from") == "archived" and trans.get("to") == "active":
-                 error_caught = "LRI_004_INVALID_LIFECYCLE_TRANSITION"
+            trans = scenario["requested_transition"]
+            if trans.get("from") == "archived" and trans.get("to") == "active":
+                error_caught = "LRI_004_INVALID_LIFECYCLE_TRANSITION"
 
         # Apply intent only if no error (and not drift which we handled)
         if not error_caught and not is_drift:
@@ -431,11 +410,11 @@ def run_playground():
 
             # Scenario 05: Activation Logic / Phase Change
             if "phase_after" in expected:
-                 # Check conditions (mocking the rule check)
-                 if identity["coherence"] >= 0.6: # Mock threshold
-                     identity["phase"] = expected["phase_after"]
-                 else:
-                     print(f"⚠️ Phase transition to {expected['phase_after']} failed due to low coherence.")
+                # Check conditions (mocking the rule check)
+                if identity["coherence"] >= 0.6:  # Mock threshold
+                    identity["phase"] = expected["phase_after"]
+                else:
+                    print(f"⚠️ Phase transition to {expected['phase_after']} failed due to low coherence.")
 
         # Validation against expectations
         passed = True
@@ -448,12 +427,12 @@ def run_playground():
                 print(f"❌ Failed: Expected error {expected['error']}, got {error_caught}")
                 passed = False
         elif error_caught:
-             print(f"❌ Unexpected Error: {error_caught}")
-             passed = False
+            print(f"❌ Unexpected Error: {error_caught}")
+            passed = False
         else:
-             print("✓ Coherence within valid range")
-             print("✓ Phase transition valid")
-             print("✓ Expected outcome matched")
+            print("✓ Coherence within valid range")
+            print("✓ Phase transition valid")
+            print("✓ Expected outcome matched")
 
         # Update Trajectory
         end_coherence = identity.get("coherence", 0.0)
@@ -467,22 +446,18 @@ def run_playground():
 
         # Add Step
         if is_init_step:
-            renderer.add_step(
-                identity["phase"], identity["coherence"],
-                None, 0.0, "success"
-            )
+            renderer.add_step(identity["phase"], identity["coherence"], None, 0.0, "success")
         else:
             if intent:
                 renderer.add_step(
-                    identity["phase"], identity["coherence"],
-                    intent, delta, status, error_msg=error_caught
+                    identity["phase"], identity["coherence"], intent, delta, status, error_msg=error_caught
                 )
 
         # Render Trajectory
         renderer.render(identity.get("id", "unknown"))
 
         if passed:
-             pass
+            pass
         else:
             print("🛑 Scenario Failed\n")
 
@@ -490,6 +465,7 @@ def run_playground():
 
     print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
     print("🎉 Playground finished.")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="LRI Playground")

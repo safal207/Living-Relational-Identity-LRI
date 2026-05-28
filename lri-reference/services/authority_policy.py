@@ -1,5 +1,7 @@
-from typing import Dict, Any, List
+from typing import Any, Dict
+
 from models.identity_state import IdentityState
+
 
 class AuthorityPolicy:
     """
@@ -11,7 +13,9 @@ class AuthorityPolicy:
     def __init__(self, drift_threshold: float = 0.5):
         self.drift_threshold = drift_threshold
 
-    def is_authorized(self, identity: IdentityState, action: str, context: Dict[str, Any], drift_score: float = 0.0) -> bool:
+    def is_authorized(
+        self, identity: IdentityState, action: str, context: Dict[str, Any], drift_score: float = 0.0
+    ) -> bool:
         """
         Checks if the action is authorized.
 
@@ -37,6 +41,7 @@ class AuthorityPolicy:
         #     return False
 
         return True
+
 
 # Global instance
 authority_policy = AuthorityPolicy()

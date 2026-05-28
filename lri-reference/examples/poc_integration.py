@@ -1,6 +1,7 @@
 import json
 
-from api import subject, relations, authority
+from api import authority, relations, subject
+
 
 def run_poc():
     print("=== LRI PoC Integration: LRI ↔ LTP / DMP ===\n")
@@ -8,12 +9,7 @@ def run_poc():
     # -------------------------------
     # 1. Create Subject
     # -------------------------------
-    subject_data = {
-        "id": "subj-001",
-        "name": "Alice",
-        "role": "agent",
-        "created_at": "2026-01-08T00:00:00Z"
-    }
+    subject_data = {"id": "subj-001", "name": "Alice", "role": "agent", "created_at": "2026-01-08T00:00:00Z"}
 
     res_create = subject.create_subject(subject_data["id"], subject_data)
     print(f"[1] Created Subject:\n{json.dumps(res_create, indent=2)}\n")
@@ -25,7 +21,7 @@ def run_poc():
         "event_id": "ltp-001",
         "subject_id": "subj-001",
         "action": "trade",
-        "timestamp": "2026-01-08T00:01:00Z"
+        "timestamp": "2026-01-08T00:01:00Z",
     }
 
     # Link event to subject
@@ -39,7 +35,7 @@ def run_poc():
         "record_id": "dmp-001",
         "subject_id": "subj-001",
         "decision": "approved",
-        "timestamp": "2026-01-08T00:02:00Z"
+        "timestamp": "2026-01-08T00:02:00Z",
     }
 
     # Link record to subject
@@ -61,6 +57,7 @@ def run_poc():
     print(f"[5] All Relations for Subject {subject_data['id']}:\n{json.dumps(all_relations, indent=2)}\n")
 
     print("=== PoC Integration Completed Successfully ===")
+
 
 if __name__ == "__main__":
     run_poc()

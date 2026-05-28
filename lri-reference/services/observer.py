@@ -1,9 +1,11 @@
 from datetime import datetime, timezone
-from models.identity_state import IdentityState
+
 from models.audit_snapshot import AuditSnapshot
-from services.metrics_engine import metrics_engine
-from services.drift_monitor import drift_monitor
+from models.identity_state import IdentityState
 from services.authority_policy import authority_policy
+from services.drift_monitor import drift_monitor
+from services.metrics_engine import metrics_engine
+
 
 class Observer:
     """
@@ -35,7 +37,7 @@ class Observer:
             continuity_hash=identity.last_hash,
             drift_score=drift_score,
             authority_claims=claims,
-            trajectory_length=len(identity.trajectory)
+            trajectory_length=len(identity.trajectory),
         )
 
     def verify_continuity(self, subject_id: str) -> dict:
@@ -50,7 +52,7 @@ class Observer:
             "subject_id": subject_id,
             "head_hash": identity.last_hash,
             "chain_length": len(identity.trajectory),
-            "status": "verified" # Placeholder for actual re-hashing verification
+            "status": "verified",  # Placeholder for actual re-hashing verification
         }
 
     def read_drift_metrics(self, subject_id: str) -> dict:
@@ -63,7 +65,7 @@ class Observer:
             "subject_id": subject_id,
             "drift_score": drift,
             "intentions_count": len(raw_metrics.get("intentions", [])),
-            "actions_count": raw_metrics.get("actions", 0)
+            "actions_count": raw_metrics.get("actions", 0),
         }
 
     def read_authority_claims(self, subject_id: str) -> dict:
@@ -75,8 +77,9 @@ class Observer:
         return {
             "subject_id": subject_id,
             "claims": snapshot.authority_claims,
-            "policy_threshold": authority_policy.drift_threshold
+            "policy_threshold": authority_policy.drift_threshold,
         }
+
 
 # Global instance
 observer_service = Observer()

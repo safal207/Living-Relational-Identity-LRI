@@ -1,5 +1,5 @@
-import time
 from playwright.sync_api import sync_playwright
+
 
 def test_alice_demo():
     with sync_playwright() as p:
@@ -18,7 +18,7 @@ def test_alice_demo():
 
         # Click "Study"
         page.click("button.btn-action")
-        page.wait_for_timeout(1000) # Wait for reload
+        page.wait_for_timeout(1000)  # Wait for reload
 
         # Click "Promote"
         page.click("button.btn-promote")
@@ -30,7 +30,7 @@ def test_alice_demo():
 
         # Click "Error"
         page.click("button.btn-error")
-        page.wait_for_timeout(1000) # wait for alert or page reload
+        page.wait_for_timeout(1000)  # wait for alert or page reload
 
         # Handle dialog if any (though we are headless, so alert might be suppressed or need handling)
         # The demo uses alert() on body onload if error state. Playwright auto-dismisses dialogs by default but we can listen.
@@ -42,6 +42,7 @@ def test_alice_demo():
         print("Error screenshot taken.")
 
         browser.close()
+
 
 if __name__ == "__main__":
     test_alice_demo()

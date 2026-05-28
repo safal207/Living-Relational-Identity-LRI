@@ -1,23 +1,17 @@
 import uvicorn
-from fastapi import FastAPI, Form, Request
-from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
-
 from api import subject
-from services.cycle_engine import run_identity_cycle
+from fastapi import FastAPI, Form
+from fastapi.responses import HTMLResponse
 from models.identity_state import IdentityState
+from services.cycle_engine import run_identity_cycle
 
 app = FastAPI(title="Alice in Action Demo")
 
 # Initialize Alice if not exists
 subject_id = "alice-demo-001"
 if "error" in subject.get_subject(subject_id):
-    subject.create_subject(subject_id, {
-        "id": subject_id,
-        "name": "Alice",
-        "role": "student",
-        "trajectory": []
-    })
+    subject.create_subject(subject_id, {"id": subject_id, "name": "Alice", "role": "student", "trajectory": []})
+
 
 @app.get("/", response_class=HTMLResponse)
 def index():
@@ -27,10 +21,9 @@ def index():
     trajectory = identity.trajectory
 
     # Calculate drift/coherence
-    drift = 0.0
-    if hasattr(identity, 'metrics') and identity.metrics: # Usually computed in cycle
-         pass
-         # In cycle_engine it returns snapshot with metrics, but IdentityState in memory might not have it attached directly unless saved
+    if hasattr(identity, "metrics") and identity.metrics:  # Usually computed in cycle
+        pass
+        # In cycle_engine it returns snapshot with metrics, but IdentityState in memory might not have it attached directly unless saved
 
     # For demo visualization, let's just grab the last snapshot or re-calculate if needed.
     # But since cycle_engine updates metrics engine, we can query metrics engine?
@@ -50,9 +43,12 @@ def index():
 
     current_role = subj.get("role", "student")
     role_color = "gray"
-    if current_role == "student": role_color = "#3498db"
-    elif current_role == "apprentice": role_color = "#f1c40f"
-    elif current_role == "mentor": role_color = "#2ecc71"
+    if current_role == "student":
+        role_color = "#3498db"
+    elif current_role == "apprentice":
+        role_color = "#f1c40f"
+    elif current_role == "mentor":
+        role_color = "#2ecc71"
 
     # Simulate Coherence Score visualization
     # In a real app, this comes from `identity.metrics.drift`
@@ -65,11 +61,12 @@ def index():
 
     coherence = 1.0
     if is_error_state:
-        coherence = 0.45 # Low coherence due to error
+        coherence = 0.45  # Low coherence due to error
     elif len(trajectory) > 0:
         # Simulate organic fluctuation
         coherence = max(0.7, 1.0 - (len(trajectory) * 0.05))
-        if current_role == "mentor": coherence = 0.98 # High coherence for mentors
+        if current_role == "mentor":
+            coherence = 0.98  # High coherence for mentors
 
     coherence_color = "#2ecc71" if coherence > 0.8 else "#f1c40f" if coherence > 0.5 else "#e74c3c"
     coherence_percent = int(coherence * 100)
@@ -150,6 +147,7 @@ def index():
     """
     return HTMLResponse(content=html_content)
 
+
 @app.post("/act", response_class=HTMLResponse)
 def act(action_type: str = Form(...)):
     # Simulate a study action
@@ -157,10 +155,11 @@ def act(action_type: str = Form(...)):
         "subject_id": subject_id,
         "action": "study_session",
         "intention": "increase_competence",
-        "context": {"module": "advanced_lri"}
+        "context": {"module": "advanced_lri"},
     }
     run_identity_cycle(payload)
     return index()
+
 
 @app.post("/promote", response_class=HTMLResponse)
 def promote():
@@ -183,7 +182,7 @@ def promote():
         "subject_id": subject_id,
         "action": action,
         "intention": "career_growth",
-        "context": {"old_role": current_role, "new_role": new_role}
+        "context": {"old_role": current_role, "new_role": new_role},
     }
     run_identity_cycle(payload)
 
@@ -191,6 +190,7 @@ def promote():
     subject.update_subject(subject_id, {"role": new_role})
 
     return index()
+
 
 @app.post("/error", response_class=HTMLResponse)
 def trigger_error():
@@ -204,22 +204,19 @@ def trigger_error():
         "subject_id": subject_id,
         "action": "break_production",
         "intention": "unknown_chaos",
-        "context": {"severity": "high"}
+        "context": {"severity": "high"},
     }
     run_identity_cycle(payload)
     return index()
+
 
 @app.post("/reset", response_class=HTMLResponse)
 def reset():
     # Reset Alice
     subject.delete_subject(subject_id)
-    subject.create_subject(subject_id, {
-        "id": subject_id,
-        "name": "Alice",
-        "role": "student",
-        "trajectory": []
-    })
+    subject.create_subject(subject_id, {"id": subject_id, "name": "Alice", "role": "student", "trajectory": []})
     return index()
+
 
 if __name__ == "__main__":
     print("Starting Alice Demo on http://0.0.0.0:8005")

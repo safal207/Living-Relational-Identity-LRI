@@ -1,10 +1,10 @@
+import uvicorn
+from api import authority, economic, observer_routes, relations, simulate_cycle, subject
 from fastapi import FastAPI, HTTPException
-from api import subject, relations, authority, simulate_cycle, observer_routes, economic
-from security.key_store import APIKeyStore
+from pydantic import BaseModel
 from security.access_control import AccessScope
 from security.audit_log import AuditLog
-from pydantic import BaseModel
-import uvicorn
+from security.key_store import APIKeyStore
 
 app = FastAPI(title="LRI Integration Service")
 
@@ -18,6 +18,7 @@ app.include_router(observer_routes.router)
 # Include the economic artifacts router
 app.include_router(economic.router, prefix="/export", tags=["Economic Artifacts"])
 
+
 # -------------------------------
 # Models
 # -------------------------------
@@ -26,15 +27,18 @@ class SubjectModel(BaseModel):
     name: str
     role: str
 
+
 class EventModel(BaseModel):
     event_id: str
     subject_id: str
     action: str
 
+
 class DMPModel(BaseModel):
     record_id: str
     subject_id: str
     decision: str
+
 
 # -------------------------------
 # Endpoints
@@ -43,9 +47,11 @@ class DMPModel(BaseModel):
 def create_subject_api(s: SubjectModel):
     return subject.create_subject(s.id, s.dict())
 
+
 @app.get("/subject/{subject_id}")
 def get_subject_api(subject_id: str):
     return subject.get_subject(subject_id)
+
 
 @app.post("/ltp_event/")
 def create_ltp_event(event: EventModel):
@@ -54,6 +60,7 @@ def create_ltp_event(event: EventModel):
     relations.link_subject(event.subject_id, event.event_id, "ltp_event")
     return {"status": "linked", "event": event.dict()}
 
+
 @app.post("/dmp_record/")
 def create_dmp_record(record: DMPModel):
     # In a real app, we would store the record itself.
@@ -61,13 +68,16 @@ def create_dmp_record(record: DMPModel):
     relations.link_subject(record.subject_id, record.record_id, "dmp_record")
     return {"status": "linked", "record": record.dict()}
 
+
 @app.get("/subject/{subject_id}/relations")
 def list_relations_api(subject_id: str):
     return {"relations": relations.list_relations(subject_id)}
 
+
 @app.get("/subject/{subject_id}/authority")
 def check_authority_api(subject_id: str, action: str):
     return authority.check_authority(subject_id, action)
+
 
 @app.get("/subject/{subject_id}/continuity")
 def check_continuity_api(subject_id: str, api_key: str):
@@ -75,12 +85,9 @@ def check_continuity_api(subject_id: str, api_key: str):
     if not key or not key.allows(AccessScope.READ_CONTINUITY):
         raise HTTPException(status_code=403, detail="Forbidden")
 
-    AuditLog.record(
-        event="read_continuity",
-        subject_id=subject_id,
-        api_key=api_key
-    )
+    AuditLog.record(event="read_continuity", subject_id=subject_id, api_key=api_key)
     return authority.validate_continuity(subject_id)
+
 
 # -------------------------------
 # Run service

@@ -1,6 +1,6 @@
-import click
 import json
 
+import click
 from services.multi_agent_engine import MultiAgentEnvironment
 
 # Note: Since this CLI runs as a script, the environment is re-initialized on every command.
@@ -20,12 +20,14 @@ from services.multi_agent_engine import MultiAgentEnvironment
 
 env = MultiAgentEnvironment()
 
+
 @click.group(invoke_without_command=True)
 @click.pass_context
 def cli(ctx):
     """CLI for Multi-Agent LRI"""
     if ctx.invoked_subcommand is None:
         repl()
+
 
 def repl():
     click.echo("--- Multi-Agent LRI Shell (Type 'exit' to quit) ---")
@@ -58,20 +60,21 @@ def repl():
                 action = parts[3]
                 intention = parts[4]
 
-                result = env.interact(actor, target, action, intention)
+                env.interact(actor, target, action, intention)
                 click.echo("✅ Interaction completed")
                 click.echo(f"Trajectory Actor ({actor}):")
                 click.echo(f"Trajectory Target ({target}):")
                 click.echo(json.dumps(env.agents[target], indent=2))
 
             elif cmd == "status":
-                 click.echo(json.dumps(env.agents, indent=2))
+                click.echo(json.dumps(env.agents, indent=2))
 
             else:
                 click.echo("Unknown command. Available: add, interact, status, exit")
 
         except Exception as e:
             click.echo(f"Error: {e}")
+
 
 if __name__ == "__main__":
     cli()
