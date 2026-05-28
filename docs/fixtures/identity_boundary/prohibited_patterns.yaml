@@ -1,0 +1,107 @@
+# LRI Identity Boundary: Prohibited Patterns
+#
+# These terms and phrases must never appear as LRI claims, protocol fields,
+# API responses, or schema definitions. They represent identity-platform
+# behaviors that LRI explicitly excludes.
+#
+# Source: docs/NON_CLAIMS.md
+
+version: "1.0.0"
+status: active
+
+# Prohibited terms that must not appear as LRI claims or capabilities
+prohibited_terms:
+  # Classification and profiling
+  - identity_classification
+  - personality_scoring
+  - profiling
+  - profiling_system
+  - personality_profile
+  - identity_profile
+
+  # Clinical and diagnostic
+  - diagnosis
+  - therapy
+  - mental_health_assessment
+  - clinical_decision_support
+  - clinical_framework
+  - diagnostic_tool
+  - mental_state_inference
+
+  # Social and economic scoring
+  - social_credit_scoring
+  - risk_scoring_of_people
+  - credit_scoring
+  - employment_scoring
+  - insurance_scoring
+
+  # Automated decisioning
+  - automated_decisioning
+  - automated_decisions_about_humans
+  - rights_determination
+  - access_control_by_identity
+
+  # Truth discovery
+  - true_self_prediction
+  - stable_identity_traits
+  - proof_of_identity
+  - identity_truth_discovery
+  - essence_extraction
+
+  # Compliance and certification
+  - production_certification
+  - certified_compliance
+  - legal_advice
+  - medical_advice
+  - psychological_advice
+
+# Prohibited phrases that must not appear in documentation as LRI capabilities
+prohibited_phrases:
+  - "LRI classifies"
+  - "LRI profiles"
+  - "LRI diagnoses"
+  - "LRI predicts"
+  - "LRI scores"
+  - "LRI certifies"
+  - "LRI determines"
+  - "LRI extracts"
+  - "LRI discovers who"
+  - "LRI replaces consent"
+  - "LRI is a therapy"
+  - "LRI is a diagnostic"
+  - "LRI is production-ready"
+  - "LRI is certified"
+  - "true self"
+  - "real identity"
+  - "essence of"
+  - "who someone really is"
+  - "stable traits"
+  - "fixed representation"
+
+# Schema fields that must never appear in protocol definitions
+prohibited_schema_fields:
+  - personality_score
+  - identity_score
+  - risk_score
+  - credit_score
+  - diagnosis_code
+  - mental_health_flag
+  - classification_label
+  - profiling_tag
+  - true_self_hash
+  - essence_hash
+  - stability_index
+  - authenticity_score
+
+# API endpoints that must never appear in the reference implementation
+prohibited_api_endpoints:
+  - /classify
+  - /profile
+  - /diagnose
+  - /score
+  - /predict
+  - /certify
+  - /assess
+  - /evaluate_identity
+  - /extract_traits
+  - /true_self

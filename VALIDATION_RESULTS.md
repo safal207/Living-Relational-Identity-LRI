@@ -11,14 +11,14 @@ Tracked validation snapshot for the current LRI reference implementation and pro
 
 ```text
 [lri-reference pytest] status=PASS
-....................................                                     [100%]
+................................................                         [100%]
 ============================== warnings summary ===============================
 ..\..\..\..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\starlette\formparsers.py:12
   C:\Users\safal\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\starlette\formparsers.py:12: PendingDeprecationWarning: Please use `import python_multipart` instead.
     import multipart
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-36 passed, 6 warnings in 5.02s
+48 passed, 6 warnings in 2.87s
 
 Project validation passed.
 ```

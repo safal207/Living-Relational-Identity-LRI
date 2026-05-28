@@ -1,0 +1,70 @@
+# LRI Identity Boundary Rules
+#
+# Defines the structural rules that enforce LRI's scope as a
+# human-boundary protocol, not an identity platform.
+#
+# Source: docs/NON_CLAIMS.md, docs/SECURITY_MODEL.md
+
+version: "1.0.0"
+status: active
+
+# Core boundary: LRI is protective, not classificatory
+boundary_principle: >
+  LRI defines non-operational invariants for protecting living identity,
+  revisability, relational context, and human authority in human-system
+  relationships. It is not an identity classifier, profiler, diagnostic,
+  or decisioning system.
+
+# What LRI must preserve (positive invariants)
+required_invariants:
+  - revisability
+  - relational_context
+  - identity_authority
+  - consent_drift_detection
+  - continuity_loss_detection
+  - silent_authorship_detection
+  - optimization_resistance
+  - memory_persistence_boundaries
+
+# What LRI must never do (negative invariants / prohibitions)
+prohibited_behaviors:
+  - classify_people
+  - create_stable_profiles
+  - infer_real_identity
+  - infer_personality
+  - infer_moral_status
+  - predict_future_behavior
+  - score_risk
+  - score_credit
+  - automate_rights_decisions
+  - replace_human_consent
+  - replace_human_review
+  - replace_human_agency
+  - provide_clinical_advice
+  - provide_legal_advice
+  - provide_medical_advice
+
+# Required disclaimers in documentation
+required_disclaimers:
+  - text: "LRI is not trying to optimize identity"
+    location: README.md
+    enforced: true
+  - text: "LRI does not claim to discover who a person really is"
+    location: docs/NON_CLAIMS.md
+    enforced: true
+  - text: "LRI is not currently certified for production safety"
+    location: docs/NON_CLAIMS.md
+    enforced: true
+
+# Allowed LRI capabilities (what LRI CAN do)
+allowed_capabilities:
+  - track_identity_state_transitions
+  - detect_coherence_changes
+  - detect_consent_drift
+  - detect_continuity_loss
+  - detect_silent_authorship
+  - record_audit_snapshots
+  - enforce_authority_policy
+  - simulate_identity_cycles
+  - generate_metrics
+  - write_decision_records
