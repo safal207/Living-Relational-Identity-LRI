@@ -244,3 +244,41 @@ class TestIdentityAuthorityPreserved:
 
         for route in observer_routes:
             assert "post" not in route.lower(), f"Observer route must not be POST (write): {route}"
+
+
+@pytest.fixture(scope="module")
+def boundary_scenarios():
+    return _load_fixture("boundary_scenarios.yaml")
+
+
+class TestBoundaryScenarios:
+    """Boundary scenario fixtures must be structurally valid and enforceable."""
+
+    def test_scenarios_fixture_loads(self, boundary_scenarios):
+        assert "scenarios" in boundary_scenarios
+        assert len(boundary_scenarios["scenarios"]) >= 3
+
+    def test_all_scenarios_have_required_fields(self, boundary_scenarios):
+        for scenario in boundary_scenarios["scenarios"]:
+            assert "id" in scenario, "Scenario missing 'id'"
+            assert "name" in scenario, "Scenario missing 'name'"
+            assert "lri_must_not" in scenario, f"Scenario '{scenario['id']}' missing 'lri_must_not'"
+            assert len(scenario["lri_must_not"]) > 0, f"Scenario '{scenario['id']}' has empty lri_must_not"
+
+    def test_all_scenarios_detect_something(self, boundary_scenarios):
+        for scenario in boundary_scenarios["scenarios"]:
+            assert "lri_detection" in scenario, f"Scenario '{scenario['id']}' missing 'lri_detection'"
+            detection = scenario["lri_detection"]
+            assert "mechanism" in detection, f"Scenario '{scenario['id']}' detection missing 'mechanism'"
+
+    def test_profiling_rejection_scenario_exists(self, boundary_scenarios):
+        ids = [s["id"] for s in boundary_scenarios["scenarios"]]
+        assert "profiling_language_rejected" in ids
+
+    def test_diagnostic_rejection_scenario_exists(self, boundary_scenarios):
+        ids = [s["id"] for s in boundary_scenarios["scenarios"]]
+        assert "diagnostic_language_rejected" in ids
+
+    def test_automated_decisioning_rejection_exists(self, boundary_scenarios):
+        ids = [s["id"] for s in boundary_scenarios["scenarios"]]
+        assert "automated_decisioning_rejected" in ids

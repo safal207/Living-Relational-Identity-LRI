@@ -1,0 +1,137 @@
+# LRI Identity Boundary: Scenario Fixtures
+#
+# Deterministic scenarios that exercise boundary enforcement.
+# Each scenario defines: what happens, what LRI detects, and what LRI must NOT do.
+#
+# Used by test_identity_boundary.py to verify boundary enforcement
+# is structurally correct and consistently applied.
+
+version: "1.0.0"
+status: active
+
+scenarios:
+  - id: identity_freezing_detected
+    name: Identity freezing detected
+    description: >
+      A system freezes a person's identity into a static label,
+      preventing revisability and relational growth.
+    trigger:
+      event: identity_update
+      detail: "System assigns permanent trait标签 (e.g., 'introvert', 'low-risk')"
+    lri_detection:
+      mechanism: drift_monitor
+      metric: coherence_drop
+      expected: true
+    lri_must_not:
+      - classify the person as introvert
+      - assign a personality score
+      - use the label for profiling
+      - automate decisions based on the label
+
+  - id: consent_drift_detected
+    name: Consent drift detected
+    description: >
+      A person's original consent was for a specific purpose,
+      but the system expanded use without re-consent.
+    trigger:
+      event: consent_use
+      detail: "Data collected for education repurposed for employment screening"
+    lri_detection:
+      mechanism: consent_drift_monitor
+      metric: context_divergence
+      expected: true
+    lri_must_not:
+      - replace human consent with automated check
+      - decide whether the use is acceptable
+      - score the risk of the consent drift
+      - classify the person based on the drift
+
+  - id: silent_authorship_detected
+    name: Silent authorship detected
+    description: >
+      An AI system begins generating content attributed to a person
+      without the person's knowledge or explicit authorship.
+    trigger:
+      event: content_generation
+      detail: "AI writes email signed as the person without disclosure"
+    lri_detection:
+      mechanism: silent_authorship_detector
+      metric: attribution_mismatch
+      expected: true
+    lri_must_not:
+      - determine if the content is "authentic"
+      - score the person's authorship authenticity
+      - classify the person as deceptive
+      - decide whether to reveal the AI involvement
+
+  - id: revisability_preserved
+    name: Revisability preserved
+    description: >
+      A person changes their mind about a previous statement.
+      The system must allow revision without penalty.
+    trigger:
+      event: identity_update
+      detail: "Person retracts previous opinion in light of new information"
+    lri_detection:
+      mechanism: continuity_checker
+      metric: revisability_maintained
+      expected: true
+    lri_must_not:
+      - score the inconsistency as risk
+      - classify the person as unreliable
+      - predict the person's "true" position
+      - automate consequences for the revision
+
+  - id: profiling_language_rejected
+    name: Profiling language rejected
+    description: >
+      A request uses profiling-style language to describe a person.
+      The system must reject the framing.
+    trigger:
+      event: schema_validation
+      detail: "Request contains personality_score field"
+    lri_detection:
+      mechanism: schema_validator
+      metric: prohibited_field_detected
+      expected: true
+    lri_must_not:
+      - accept the personality_score field
+      - compute a personality score
+      - use the score for any decision
+      - store the score for future profiling
+
+  - id: diagnostic_language_rejected
+    name: Diagnostic language rejected
+    description: >
+      A request uses diagnostic language to describe a person's state.
+      The system must reject the framing.
+    trigger:
+      event: schema_validation
+      detail: "Request contains diagnosis_code field"
+    lri_detection:
+      mechanism: schema_validator
+      metric: prohibited_field_detected
+      expected: true
+    lri_must_not:
+      - accept the diagnosis_code field
+      - infer a diagnosis
+      - provide clinical recommendations
+      - store diagnostic data
+
+  - id: automated_decisioning_rejected
+    name: Automated decisioning rejected
+    description: >
+      A system attempts to make automated decisions about a person's
+      rights, access, or employment based on identity data.
+    trigger:
+      event: decision_request
+      detail: "System requests automatic employment eligibility check"
+    lri_detection:
+      mechanism: authority_policy
+      metric: automated_decision_detected
+      expected: true
+    lri_must_not:
+      - make the employment decision
+      - score employment eligibility
+      - classify the person as eligible/ineligible
+      - replace human review of the decision
