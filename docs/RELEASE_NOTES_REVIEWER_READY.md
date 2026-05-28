@@ -72,13 +72,13 @@ See `docs/NON_CLAIMS.md` for the full scope boundary. In brief, LRI is not:
 
 - In-memory storage: all state is lost on server restart
 - Hardcoded secrets: JWT key and passwords are in code (not production-ready)
-- Limited test coverage: 16 tests, no API route tests, no adapter tests
+- Limited test coverage: 31 tests, no adapter tests
 - Docker and pre-commit automation are not yet complete
 - PR #28 (snapshot_diff.py) triaged but not merged
 
 ## Next steps
 
 - Production hardening: persistence, secrets management
-- Expanded test coverage: API routes, adapters, property-based testing
+- Expanded test coverage: adapter tests, property-based testing
 - CI/CD pipeline: GitHub Actions, pre-commit, Docker
 - Integration with LTP, CML, DMP, PythiaLabs
